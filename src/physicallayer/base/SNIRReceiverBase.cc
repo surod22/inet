@@ -16,6 +16,7 @@
 //
 
 #include "SNIRReceiverBase.h"
+#include "SynchronizationDecision.h"
 #include "ReceptionDecision.h"
 
 namespace inet {
@@ -33,6 +34,30 @@ bool SNIRReceiverBase::areOverlappingBands(Hz carrierFrequency1, Hz bandwidth1, 
 {
     return carrierFrequency1 + bandwidth1 / 2 >= carrierFrequency2 - bandwidth2 / 2 &&
            carrierFrequency1 - bandwidth1 / 2 <= carrierFrequency2 + bandwidth2 / 2;
+}
+
+const RadioSynchronizationIndication *SNIRReceiverBase::computeSynchronizationIndication(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const
+{
+    const INoise *noise = computeNoise(listening, interferingReceptions, backgroundNoise);
+    double minSNIR = computeMinSNIR(reception, noise);
+    delete noise;
+    RadioSynchronizationIndication *indication = new RadioSynchronizationIndication();
+    indication->setMinSNIR(minSNIR);
+    return indication;
+}
+
+bool SNIRReceiverBase::computeIsSynchronizationSuccessful(const IListening *listening, const IReception *reception, const RadioSynchronizationIndication *indication) const
+{
+    return indication->getMinSNIR() > snirThreshold;
+}
+
+const ISynchronizationDecision *SNIRReceiverBase::computeSynchronizationDecision(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const
+{
+    bool isSynchronizationPossible = computeIsSynchronizationPossible(listening, reception);
+    bool isSynchronizationAttempted = isSynchronizationPossible && computeIsSynchronizationAttempted(listening, reception, interferingReceptions);
+    const RadioSynchronizationIndication *indication = isSynchronizationAttempted ? computeSynchronizationIndication(listening, reception, interferingReceptions, backgroundNoise) : NULL;
+    bool isSynchronizationSuccessful = isSynchronizationAttempted && computeIsSynchronizationSuccessful(listening, reception, indication);
+    return new SynchronizationDecision(reception, indication, isSynchronizationPossible, isSynchronizationAttempted, isSynchronizationSuccessful);
 }
 
 const RadioReceptionIndication *SNIRReceiverBase::computeReceptionIndication(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const

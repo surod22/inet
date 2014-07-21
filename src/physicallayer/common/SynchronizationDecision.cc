@@ -15,15 +15,15 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "ReceptionDecision.h"
+#include "SynchronizationDecision.h"
 
 namespace inet {
 
 namespace physicallayer {
 
-void ReceptionDecision::printToStream(std::ostream& stream) const
+void SynchronizationDecision::printToStream(std::ostream& stream) const
 {
-    stream << "reception decision, " << (isPossible_ ? "possible" : "impossible");
+    stream << "synchronization decision, " << (isPossible_ ? "possible" : "impossible");
     stream << ", " << (isSuccessful_ ? "successful" : "unsuccessful");
     stream << ", indication = " << indication;
 }

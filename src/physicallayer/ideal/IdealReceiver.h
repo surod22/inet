@@ -31,17 +31,18 @@ class INET_API IdealReceiver : public ReceiverBase
 
   protected:
     virtual void initialize(int stage);
+    virtual bool computeIsSynchronizationPossible(const IListening *listening, const IReception *reception) const;
+    virtual bool computeIsSynchronizationAttempted(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions) const;
     virtual bool computeIsReceptionPossible(const IListening *listening, const IReception *reception) const;
     virtual bool computeIsReceptionAttempted(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions) const;
 
   public:
-    IdealReceiver() :
-        ignoreInterference(false)
-    {}
+    IdealReceiver();
 
     virtual void printToStream(std::ostream& stream) const;
     virtual const IListening *createListening(const IRadio *radio, const simtime_t startTime, const simtime_t endTime, const Coord startPosition, const Coord endPosition) const;
     virtual const IListeningDecision *computeListeningDecision(const IListening *listening, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const;
+    virtual const ISynchronizationDecision *computeSynchronizationDecision(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const;
     virtual const IReceptionDecision *computeReceptionDecision(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const;
 };
 

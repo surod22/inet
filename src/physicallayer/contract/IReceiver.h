@@ -22,6 +22,7 @@
 #include "INoise.h"
 #include "IReception.h"
 #include "IListeningDecision.h"
+#include "ISynchronizationDecision.h"
 #include "IReceptionDecision.h"
 #include "RadioControlInfo_m.h"
 
@@ -74,6 +75,34 @@ class INET_API IReceiver : public IPrintableObject
      * support optimistic parallel computation.
      */
     virtual const IListeningDecision *computeListeningDecision(const IListening *listening, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const = 0;
+
+    /**
+     * Returns whether the transmission can be received successfully or not.
+     * This function need not be purely functional and need not support
+     * optimistic parallel computation.
+     */
+    virtual bool computeIsSynchronizationPossible(const ITransmission *transmission) const = 0;
+
+    /**
+     * Returns whether the transmission represented by the synchronization can be
+     * received successfully or not. This function must be purely functional
+     * and support optimistic parallel computation.
+     */
+    virtual bool computeIsSynchronizationPossible(const IListening *listening, const IReception *reception) const = 0;
+
+    /**
+     * Returns whether the synchronization is actually attempted or ignored by the
+     * receiver. This function must be purely functional and support optimistic
+     * parallel computation.
+     */
+    virtual bool computeIsSynchronizationAttempted(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions) const = 0;
+
+    /**
+     * Returns the result of the synchronization process specifying whether it was
+     * successful or not and any other physical properties. This function must
+     * be purely functional and support optimistic parallel computation.
+     */
+    virtual const ISynchronizationDecision *computeSynchronizationDecision(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const = 0;
 
     /**
      * Returns whether the transmission can be received successfully or not.

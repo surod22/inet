@@ -35,13 +35,23 @@ class INET_API SNIRReceiverBase : public ReceiverBase
     virtual bool areOverlappingBands(Hz carrierFrequency1, Hz bandwidth1, Hz carrierFrequency2, Hz bandwidth2) const;
 
     /**
+     * Returns the physical properties of the synchronization including noise.
+     * This function must be purely functional and support optimistic parallel
+     * computation.
+     */
+    virtual const RadioSynchronizationIndication *computeSynchronizationIndication(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const;
+    /**
+     * Returns whether the synchronization is successful or not. This function must
+     * be purely functional and support optimistic parallel computation.
+     */
+    virtual bool computeIsSynchronizationSuccessful(const IListening *listening, const IReception *reception, const RadioSynchronizationIndication *indication) const;
+    /**
      * Returns the physical properties of the reception including noise and
      * signal related measures, error probabilities, actual error counts, etc.
      * This function must be purely functional and support optimistic parallel
      * computation.
      */
     virtual const RadioReceptionIndication *computeReceptionIndication(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const;
-
     /**
      * Returns whether the reception is free of any errors. This function must
      * be purely functional and support optimistic parallel computation.
@@ -58,6 +68,7 @@ class INET_API SNIRReceiverBase : public ReceiverBase
     {}
 
     virtual double getSNIRThreshold() const { return snirThreshold; }
+    virtual const ISynchronizationDecision *computeSynchronizationDecision(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const;
     virtual const IReceptionDecision *computeReceptionDecision(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const;
 };
 

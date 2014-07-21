@@ -15,26 +15,26 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef __INET_RECEPTIONDECISION_H
-#define __INET_RECEPTIONDECISION_H
+#ifndef __INET_SYNCHRONIZATIONDECISION_H
+#define __INET_SYNCHRONIZATIONDECISION_H
 
-#include "IReceptionDecision.h"
+#include "ISynchronizationDecision.h"
 
 namespace inet {
 
 namespace physicallayer {
 
-class INET_API ReceptionDecision : public IReceptionDecision, public cObject
+class INET_API SynchronizationDecision : public ISynchronizationDecision, public cObject
 {
   protected:
     const IReception *reception;
-    const RadioReceptionIndication *indication;
+    const RadioSynchronizationIndication *indication;
     const bool isPossible_;
     const bool isAttempted_;
     const bool isSuccessful_;
 
   public:
-    ReceptionDecision(const IReception *reception, const RadioReceptionIndication *indication, bool isPossible, bool isAttempted, bool isSuccessful) :
+    SynchronizationDecision(const IReception *reception, const RadioSynchronizationIndication *indication, bool isPossible, bool isAttempted, bool isSuccessful) :
         reception(reception),
         indication(indication),
         isPossible_(isPossible),
@@ -46,7 +46,7 @@ class INET_API ReceptionDecision : public IReceptionDecision, public cObject
 
     virtual const IReception *getReception() const { return reception; }
 
-    virtual const RadioReceptionIndication *getIndication() const { return indication; }
+    virtual const RadioSynchronizationIndication *getIndication() const { return indication; }
 
     virtual bool isPossible() const { return isPossible_; }
 
@@ -59,5 +59,5 @@ class INET_API ReceptionDecision : public IReceptionDecision, public cObject
 
 } // namespace inet
 
-#endif // ifndef __INET_RECEPTIONDECISION_H
+#endif // ifndef __INET_SYNCHRONIZATIONDECISION_H
 

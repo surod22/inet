@@ -37,6 +37,8 @@ class INET_API FlatReceiverBase : public SNIRReceiverBase
   protected:
     virtual void initialize(int stage);
 
+    virtual bool computeIsSynchronizationPossible(const ITransmission *transmission) const;
+    virtual bool computeIsSynchronizationPossible(const IListening *listening, const IReception *reception) const;
     virtual bool computeIsReceptionPossible(const ITransmission *transmission) const;
     virtual bool computeIsReceptionPossible(const IListening *listening, const IReception *reception) const;
     virtual bool computeIsReceptionSuccessful(const IListening *listening, const IReception *reception, const RadioReceptionIndication *indication) const;
@@ -62,6 +64,7 @@ class INET_API FlatReceiverBase : public SNIRReceiverBase
     virtual const IListening *createListening(const IRadio *radio, const simtime_t startTime, const simtime_t endTime, const Coord startPosition, const Coord endPosition) const;
 
     virtual const IListeningDecision *computeListeningDecision(const IListening *listening, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const;
+    virtual const ISynchronizationDecision *computeSynchronizationDecision(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const;
     virtual const IReceptionDecision *computeReceptionDecision(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const;
 
     virtual const IModulation *getModulation() const { return modulation; }

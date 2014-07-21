@@ -52,6 +52,15 @@ class RadioTransmissionRequest
 }
 
 //
+// TODO
+//
+class RadioSynchronizationIndication
+{
+    W minRSSI = W(sNaN);       // minimum receive signal strength indication in the range (0, +infinity) or NaN if unknown.
+    double minSNIR = sNaN;     // minimum signal to noise plus interference ratio in the range (0, +infinity) or NaN if unknown.
+}
+
+//
 // Control info attached to a mac frame that is sent up from the ~Radio.
 //
 class RadioReceptionIndication

@@ -27,8 +27,9 @@
 #include "IObstacleLoss.h"
 #include "IAttenuation.h"
 #include "IBackgroundNoise.h"
-#include "IReceptionDecision.h"
 #include "IListeningDecision.h"
+#include "ISynchronizationDecision.h"
+#include "IReceptionDecision.h"
 
 namespace inet {
 
@@ -45,20 +46,20 @@ class INET_API IRadioMedium : public IPrintableObject
 {
   public:
     /**
-     * Returns the minimum interference power among the radio receivers is
-     * in the range [0, +infinity) or NaN if unspecified.
+     * Returns the minimum interference power among the radio receivers. Returns
+     * a value in the range [0, +infinity) or NaN if unspecified.
      */
     virtual W getMinInterferencePower() const = 0;
 
     /**
-     * Returns the minimum reception power among the radio receivers is in
-     * the range [0, +infinity) or NaN if unspecified.
+     * Returns the minimum reception power among the radio receivers. Returns a
+     * value in the range [0, +infinity) or NaN if unspecified.
      */
     virtual W getMinReceptionPower() const = 0;
 
     /**
-     * Returns the maximum antenna gain among the radio antennas. The value
-     * is in the range [1, +infinity) or NaN if unspecified.
+     * Returns the maximum antenna gain among the radio antennas. Returns a value
+     * in the range [0, +infinity) or NaN if unspecified.
      */
     virtual double getMaxAntennaGain() const = 0;
 
@@ -120,6 +121,11 @@ class INET_API IRadioMedium : public IPrintableObject
     virtual IRadioFrame *transmitPacket(const IRadio *transmitter, cPacket *macFrame) = 0;
 
     /**
+     * TODO
+     */
+    virtual const ISynchronizationDecision *synchronizePacket(const IRadio *receiver, IRadioFrame *radioFrame) = 0;
+
+    /**
      * Returns the MAC frame that was transmitted in the provided radio frame.
      * The MAC frame control info will be an instance of the RadioReceptionIndication
      * class.
@@ -133,8 +139,12 @@ class INET_API IRadioMedium : public IPrintableObject
     virtual const IListeningDecision *listenOnMedium(const IRadio *receiver, const IListening *listening) const = 0;
 
     /**
-     * Returns true when the radio attempts the reception of the provided
-     * transmission.
+     * Returns true when the radio attempts the synchronization of the provided transmission.
+     */
+    virtual bool isSynchronizationAttempted(const IRadio *receiver, const ITransmission *transmission) const = 0;
+
+    /**
+     * Returns true when the radio attempts the reception of the provided transmission.
      */
     virtual bool isReceptionAttempted(const IRadio *receiver, const ITransmission *transmission) const = 0;
 

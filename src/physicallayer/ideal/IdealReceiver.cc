@@ -19,6 +19,7 @@
 #include "IdealListening.h"
 #include "IdealReception.h"
 #include "ListeningDecision.h"
+#include "SynchronizationDecision.h"
 #include "ReceptionDecision.h"
 
 namespace inet {
@@ -27,11 +28,30 @@ namespace physicallayer {
 
 Define_Module(IdealReceiver);
 
+IdealReceiver::IdealReceiver() :
+    ignoreInterference(false)
+{
+}
+
 void IdealReceiver::initialize(int stage)
 {
     if (stage == INITSTAGE_LOCAL) {
         ignoreInterference = par("ignoreInterference");
     }
+}
+
+bool IdealReceiver::computeIsSynchronizationPossible(const IListening *listening, const IReception *reception) const
+{
+    const IdealReception::Power power = check_and_cast<const IdealReception *>(reception)->getPower();
+    return power == IdealReception::POWER_RECEIVABLE;
+}
+
+bool IdealReceiver::computeIsSynchronizationAttempted(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions) const
+{
+    if (ignoreInterference)
+        return computeIsSynchronizationPossible(listening, reception);
+    else
+        return ReceiverBase::computeIsSynchronizationAttempted(listening, reception, interferingReceptions);
 }
 
 bool IdealReceiver::computeIsReceptionPossible(const IListening *listening, const IReception *reception) const
@@ -67,6 +87,28 @@ const IListeningDecision *IdealReceiver::computeListeningDecision(const IListeni
             return new ListeningDecision(listening, true);
     }
     return new ListeningDecision(listening, false);
+}
+
+const ISynchronizationDecision *IdealReceiver::computeSynchronizationDecision(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const
+{
+    // TODO: factor
+    const IdealReception::Power power = check_and_cast<const IdealReception *>(reception)->getPower();
+    RadioSynchronizationIndication *indication = new RadioSynchronizationIndication();
+    if (power == IdealReception::POWER_RECEIVABLE) {
+        if (ignoreInterference)
+            return new SynchronizationDecision(reception, indication, true, true, true);
+        else {
+            for (std::vector<const IReception *>::const_iterator it = interferingReceptions->begin(); it != interferingReceptions->end(); it++) {
+                const IReception *interferingReception = *it;
+                IdealReception::Power interferingPower = check_and_cast<const IdealReception *>(interferingReception)->getPower();
+                if (interferingPower == IdealReception::POWER_RECEIVABLE || interferingPower == IdealReception::POWER_INTERFERING)
+                    return new SynchronizationDecision(reception, indication, true, true, false);
+            }
+            return new SynchronizationDecision(reception, indication, true, true, true);
+        }
+    }
+    else
+        return new SynchronizationDecision(reception, indication, false, false, false);
 }
 
 const IReceptionDecision *IdealReceiver::computeReceptionDecision(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const

@@ -53,7 +53,8 @@ class INET_API RadioMedium : public cSimpleModule, public cListener, public IRad
         const IArrival *arrival;
         const IListening *listening;
         const IReception *reception;
-        const IReceptionDecision *decision;
+        const ISynchronizationDecision *synchronizationDecision;
+        const IReceptionDecision *receptionDecision;
 
       public:
         ReceptionCacheEntry() :
@@ -61,7 +62,8 @@ class INET_API RadioMedium : public cSimpleModule, public cListener, public IRad
             arrival(NULL),
             listening(NULL),
             reception(NULL),
-            decision(NULL)
+            synchronizationDecision(NULL),
+            receptionDecision(NULL)
         {}
     };
 
@@ -158,7 +160,7 @@ class INET_API RadioMedium : public cSimpleModule, public cListener, public IRad
      */
     W minReceptionPower;
     /**
-     * The maximum gain among the radio antennas is in the range [1, +infinity).
+     * The maximum gain among the radio antennas is in the range [0, +infinity).
      */
     double maxAntennaGain;
     /**
@@ -301,6 +303,10 @@ class INET_API RadioMedium : public cSimpleModule, public cListener, public IRad
      */
     mutable long receptionComputationCount;
     /**
+     * Total number of synchronization decision computations.
+     */
+    mutable long synchronizationDecisionComputationCount;
+    /**
      * Total number of reception decision computations.
      */
     mutable long receptionDecisionComputationCount;
@@ -317,13 +323,21 @@ class INET_API RadioMedium : public cSimpleModule, public cListener, public IRad
      */
     mutable long cacheReceptionHitCount;
     /**
+     * Total number of radio signal synchronization decision cache queries.
+     */
+    mutable long cacheSynchronizationDecisionGetCount;
+    /**
+     * Total number of radio signal synchronization decision cache hits.
+     */
+    mutable long cacheSynchronizationDecisionHitCount;
+    /**
      * Total number of radio signal reception decision cache queries.
      */
-    mutable long cacheDecisionGetCount;
+    mutable long cacheReceptionDecisionGetCount;
     /**
      * Total number of radio signal reception decision cache hits.
      */
-    mutable long cacheDecisionHitCount;
+    mutable long cacheReceptionDecisionHitCount;
     //@}
 
   protected:
@@ -352,9 +366,13 @@ class INET_API RadioMedium : public cSimpleModule, public cListener, public IRad
     virtual void setCachedReception(const IRadio *radio, const ITransmission *transmission, const IReception *reception) const;
     virtual void removeCachedReception(const IRadio *radio, const ITransmission *transmission) const;
 
-    virtual const IReceptionDecision *getCachedDecision(const IRadio *radio, const ITransmission *transmission) const;
-    virtual void setCachedDecision(const IRadio *radio, const ITransmission *transmission, const IReceptionDecision *decision) const;
-    virtual void removeCachedDecision(const IRadio *radio, const ITransmission *transmission) const;
+    virtual const ISynchronizationDecision *getCachedSynchronizationDecision(const IRadio *radio, const ITransmission *transmission) const;
+    virtual void setCachedSynchronizationDecision(const IRadio *radio, const ITransmission *transmission, const ISynchronizationDecision *decision) const;
+    virtual void removeCachedSynchronizationDecision(const IRadio *radio, const ITransmission *transmission) const;
+
+    virtual const IReceptionDecision *getCachedReceptionDecision(const IRadio *radio, const ITransmission *transmission) const;
+    virtual void setCachedReceptionDecision(const IRadio *radio, const ITransmission *transmission, const IReceptionDecision *decision) const;
+    virtual void removeCachedReceptionDecision(const IRadio *radio, const ITransmission *transmission) const;
 
     virtual void invalidateCachedDecisions(const ITransmission *transmission);
     virtual void invalidateCachedDecision(const IReceptionDecision *decision);
@@ -415,12 +433,15 @@ class INET_API RadioMedium : public cSimpleModule, public cListener, public IRad
     virtual const IReception *computeReception(const IRadio *radio, const ITransmission *transmission) const;
     virtual const std::vector<const IReception *> *computeInterferingReceptions(const IListening *listening, const std::vector<const ITransmission *> *transmissions) const;
     virtual const std::vector<const IReception *> *computeInterferingReceptions(const IReception *reception, const std::vector<const ITransmission *> *transmissions) const;
+    virtual const ISynchronizationDecision *computeSynchronizationDecision(const IRadio *radio, const IListening *listening, const ITransmission *transmission, const std::vector<const ITransmission *> *transmissions) const;
     virtual const IReceptionDecision *computeReceptionDecision(const IRadio *radio, const IListening *listening, const ITransmission *transmission, const std::vector<const ITransmission *> *transmissions) const;
     virtual const IListeningDecision *computeListeningDecision(const IRadio *radio, const IListening *listening, const std::vector<const ITransmission *> *transmissions) const;
 
     virtual const IReception *getReception(const IRadio *radio, const ITransmission *transmission) const;
+    virtual const ISynchronizationDecision *getSynchronizationDecision(const IRadio *radio, const IListening *listening, const ITransmission *transmission) const;
     virtual const IReceptionDecision *getReceptionDecision(const IRadio *radio, const IListening *listening, const ITransmission *transmission) const;
 
+    virtual const ISynchronizationDecision *synchronizeOnMedium(const IRadio *radio, const IListening *listening, const ITransmission *transmission) const;
     /**
      * Returns a reception decision that describes the reception of the provided
      * transmission by the receiver.
@@ -456,10 +477,12 @@ class INET_API RadioMedium : public cSimpleModule, public cListener, public IRad
     virtual void sendToRadio(IRadio *trasmitter, const IRadio *receiver, const IRadioFrame *frame);
 
     virtual IRadioFrame *transmitPacket(const IRadio *transmitter, cPacket *macFrame);
+    virtual const ISynchronizationDecision *synchronizePacket(const IRadio *receiver, IRadioFrame *radioFrame);
     virtual cPacket *receivePacket(const IRadio *receiver, IRadioFrame *radioFrame);
 
     virtual const IListeningDecision *listenOnMedium(const IRadio *radio, const IListening *listening) const;
 
+    virtual bool isSynchronizationAttempted(const IRadio *receiver, const ITransmission *transmission) const;
     virtual bool isReceptionAttempted(const IRadio *receiver, const ITransmission *transmission) const;
 
     virtual const IArrival *getArrival(const IRadio *receiver, const ITransmission *transmission) const;

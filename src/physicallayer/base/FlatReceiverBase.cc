@@ -22,6 +22,7 @@
 #include "Modulation.h"
 #include "BandListening.h"
 #include "ListeningDecision.h"
+#include "SynchronizationDecision.h"
 #include "ReceptionDecision.h"
 
 namespace inet {
@@ -62,6 +63,41 @@ const IListening *FlatReceiverBase::createListening(const IRadio *radio, const s
     return new BandListening(radio, startTime, endTime, startPosition, endPosition, carrierFrequency, bandwidth);
 }
 
+const IListeningDecision *FlatReceiverBase::computeListeningDecision(const IListening *listening, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const
+{
+    const INoise *noise = computeNoise(listening, interferingReceptions, backgroundNoise);
+    const FlatNoiseBase *flatNoise = check_and_cast<const FlatNoiseBase *>(noise);
+    W maxPower = flatNoise->computeMaxPower(listening->getStartTime(), listening->getEndTime());
+    delete noise;
+    return new ListeningDecision(listening, maxPower >= energyDetection);
+}
+
+bool FlatReceiverBase::computeIsSynchronizationPossible(const ITransmission *transmission) const
+{
+    // TODO: check if modulation matches?
+    const FlatTransmissionBase *flatTransmission = check_and_cast<const FlatTransmissionBase *>(transmission);
+    return carrierFrequency == flatTransmission->getCarrierFrequency() && bandwidth == flatTransmission->getBandwidth();
+}
+
+// TODO: this is not purely functional, see interface comment
+bool FlatReceiverBase::computeIsSynchronizationPossible(const IListening *listening, const IReception *reception) const
+{
+    const BandListening *bandListening = check_and_cast<const BandListening *>(listening);
+    const FlatReceptionBase *flatReception = check_and_cast<const FlatReceptionBase *>(reception);
+    return bandListening->getCarrierFrequency() == flatReception->getCarrierFrequency() && bandListening->getBandwidth() == flatReception->getBandwidth() &&
+           flatReception->computeMinPower(reception->getStartTime(), reception->getEndTime()) >= sensitivity;
+}
+
+const ISynchronizationDecision *FlatReceiverBase::computeSynchronizationDecision(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const
+{
+    const BandListening *bandListening = check_and_cast<const BandListening *>(listening);
+    const FlatReceptionBase *flatReception = check_and_cast<const FlatReceptionBase *>(reception);
+    if (bandListening->getCarrierFrequency() == flatReception->getCarrierFrequency() && bandListening->getBandwidth() == flatReception->getBandwidth())
+        return SNIRReceiverBase::computeSynchronizationDecision(listening, reception, interferingReceptions, backgroundNoise);
+    else
+        return new SynchronizationDecision(reception, new RadioSynchronizationIndication(), false, false, false);
+}
+
 bool FlatReceiverBase::computeIsReceptionPossible(const ITransmission *transmission) const
 {
     // TODO: check if modulation matches?
@@ -76,28 +112,6 @@ bool FlatReceiverBase::computeIsReceptionPossible(const IListening *listening, c
     const FlatReceptionBase *flatReception = check_and_cast<const FlatReceptionBase *>(reception);
     return bandListening->getCarrierFrequency() == flatReception->getCarrierFrequency() && bandListening->getBandwidth() == flatReception->getBandwidth() &&
            flatReception->computeMinPower(reception->getStartTime(), reception->getEndTime()) >= sensitivity;
-}
-
-const IListeningDecision *FlatReceiverBase::computeListeningDecision(const IListening *listening, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const
-{
-    const INoise *noise = computeNoise(listening, interferingReceptions, backgroundNoise);
-    const FlatNoiseBase *flatNoise = check_and_cast<const FlatNoiseBase *>(noise);
-    W maxPower = flatNoise->computeMaxPower(listening->getStartTime(), listening->getEndTime());
-    delete noise;
-    return new ListeningDecision(listening, maxPower >= energyDetection);
-}
-
-// TODO: this is not purely functional, see interface comment
-bool FlatReceiverBase::computeHasBitError(const IListening *listening, double minSNIR, int bitLength, double bitrate) const
-{
-    const BandListening *bandListening = check_and_cast<const BandListening *>(listening);
-    double ber = modulation->calculateBER(minSNIR, bandwidth.get(), bitrate);
-    if (ber == 0.0)
-        return false;
-    else {
-        double pErrorless = pow(1.0 - ber, bitLength);
-        return dblrand() > pErrorless;
-    }
 }
 
 bool FlatReceiverBase::computeIsReceptionSuccessful(const IListening *listening, const IReception *reception, const RadioReceptionIndication *indication) const
@@ -115,6 +129,19 @@ const IReceptionDecision *FlatReceiverBase::computeReceptionDecision(const IList
         return SNIRReceiverBase::computeReceptionDecision(listening, reception, interferingReceptions, backgroundNoise);
     else
         return new ReceptionDecision(reception, new RadioReceptionIndication(), false, false, false);
+}
+
+// TODO: this is not purely functional, see interface comment
+bool FlatReceiverBase::computeHasBitError(const IListening *listening, double minSNIR, int bitLength, double bitrate) const
+{
+    const BandListening *bandListening = check_and_cast<const BandListening *>(listening);
+    double ber = modulation->calculateBER(minSNIR, bandwidth.get(), bitrate);
+    if (ber == 0.0)
+        return false;
+    else {
+        double pErrorless = pow(1.0 - ber, bitLength);
+        return dblrand() > pErrorless;
+    }
 }
 
 } // namespace physicallayer

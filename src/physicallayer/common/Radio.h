@@ -64,6 +64,10 @@ class INET_API Radio : public PhysicalLayerBase, public virtual IRadio
      */
     simtime_t switchingTimes[RADIO_MODE_SWITCHING][RADIO_MODE_SWITCHING];
     /**
+     * Enables the simulation of the synchronization process.
+     */
+    bool simulateSynchronization;
+    /**
      * Displays a circle around the host submodule representing the communication range.
      */
     bool displayCommunicationRange;
@@ -114,9 +118,15 @@ class INET_API Radio : public PhysicalLayerBase, public virtual IRadio
      */
     cMessage *endTransmissionTimer;
     /**
+     * The timer that is scheduled to the end of the current synchronization.
+     * If this timer is NULL then no attempted synchronization is in progress,
+     * but there still may be incoming receptions which are not attempted.
+     */
+    cMessage *endSynchronizationTimer;
+    /**
      * The timer that is scheduled to the end of the current reception.
-     * If this timer is NULL then no attempted reception is in progress but
-     * there still may be incoming receptions which are not attempted.
+     * If this timer is NULL then no attempted reception is in progress,
+     * but there still may be incoming receptions which are not attempted.
      */
     cMessage *endReceptionTimer;
     /**
@@ -148,6 +158,8 @@ class INET_API Radio : public PhysicalLayerBase, public virtual IRadio
     virtual void startTransmission(cPacket *macFrame);
     virtual void endTransmission();
 
+    virtual void startSynchronization(RadioFrame *radioFrame);
+    virtual void endSynchronization(cMessage *message);
     virtual void startReception(RadioFrame *radioFrame);
     virtual void endReception(cMessage *message);
 
@@ -177,6 +189,7 @@ class INET_API Radio : public PhysicalLayerBase, public virtual IRadio
     virtual TransmissionState getTransmissionState() const { return transmissionState; }
 
     virtual const ITransmission *getTransmissionInProgress() const;
+    virtual const ITransmission *getSynchronizationInProgress() const;
     virtual const ITransmission *getReceptionInProgress() const;
 };
 

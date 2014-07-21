@@ -15,8 +15,8 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef __INET_IRECEPTIONDECISION_H
-#define __INET_IRECEPTIONDECISION_H
+#ifndef __INET_ISYNCHRONIZATIONDECISION_H
+#define __INET_ISYNCHRONIZATIONDECISION_H
 
 #include "IReception.h"
 #include "RadioControlInfo_m.h"
@@ -26,11 +26,11 @@ namespace inet {
 namespace physicallayer {
 
 /**
- * This interface represents the result of a receiver's reception process.
+ * This interface represents the result of a receiver's synchronization process.
  *
  * This interface is strictly immutable to safely support parallel computation.
  */
-class INET_API IReceptionDecision : public IPrintableObject
+class INET_API ISynchronizationDecision : public IPrintableObject
 {
   public:
     /**
@@ -40,24 +40,24 @@ class INET_API IReceptionDecision : public IPrintableObject
     virtual const IReception *getReception() const = 0;
 
     /**
-     * Returns the physical properties of the reception.
+     * Returns the physical properties of the synchronization.
      */
-    virtual const RadioReceptionIndication *getIndication() const = 0;
+    virtual const RadioSynchronizationIndication *getIndication() const = 0;
 
     /**
-     * Returns whether reception is possible according to the physical
+     * Returns whether synchronization is possible according to the physical
      * properties of the received radio signal.
      */
     virtual bool isPossible() const = 0;
 
     /**
-     * Returns whether the receiver decided to attempt the reception or
+     * Returns whether the receiver decided to attempt the synchronization or
      * it decided to ignore it.
      */
     virtual bool isAttempted() const = 0;
 
     /**
-     * Returns whether the reception was completely successful or not.
+     * Returns whether the synchronization was completely successful or not.
      */
     virtual bool isSuccessful() const = 0;
 };
@@ -66,5 +66,5 @@ class INET_API IReceptionDecision : public IPrintableObject
 
 } // namespace inet
 
-#endif // ifndef __INET_IRECEPTIONDECISION_H
+#endif // ifndef __INET_ISYNCHRONIZATIONDECISION_H
 
