@@ -85,6 +85,7 @@ bool FlatReceiverBase::computeIsSynchronizationPossible(const IListening *listen
     const BandListening *bandListening = check_and_cast<const BandListening *>(listening);
     const FlatReceptionBase *flatReception = check_and_cast<const FlatReceptionBase *>(reception);
     return bandListening->getCarrierFrequency() == flatReception->getCarrierFrequency() && bandListening->getBandwidth() == flatReception->getBandwidth() &&
+            // TODO: synchronization duration
            flatReception->computeMinPower(reception->getStartTime(), reception->getEndTime()) >= sensitivity;
 }
 
@@ -95,7 +96,7 @@ const ISynchronizationDecision *FlatReceiverBase::computeSynchronizationDecision
     if (bandListening->getCarrierFrequency() == flatReception->getCarrierFrequency() && bandListening->getBandwidth() == flatReception->getBandwidth())
         return SNIRReceiverBase::computeSynchronizationDecision(listening, reception, interferingReceptions, backgroundNoise);
     else
-        return new SynchronizationDecision(reception, new RadioSynchronizationIndication(), false, false, false);
+        return new SynchronizationDecision(reception, new SynchronizationIndication(), false, false, false);
 }
 
 bool FlatReceiverBase::computeIsReceptionPossible(const ITransmission *transmission) const
@@ -114,7 +115,7 @@ bool FlatReceiverBase::computeIsReceptionPossible(const IListening *listening, c
            flatReception->computeMinPower(reception->getStartTime(), reception->getEndTime()) >= sensitivity;
 }
 
-bool FlatReceiverBase::computeIsReceptionSuccessful(const IListening *listening, const IReception *reception, const RadioReceptionIndication *indication) const
+bool FlatReceiverBase::computeIsReceptionSuccessful(const IListening *listening, const IReception *reception, const ReceptionIndication *indication) const
 {
     const FlatTransmissionBase *flatTransmission = check_and_cast<const FlatTransmissionBase *>(reception->getTransmission());
     return SNIRReceiverBase::computeIsReceptionSuccessful(listening, reception, indication) &&
@@ -128,7 +129,7 @@ const IReceptionDecision *FlatReceiverBase::computeReceptionDecision(const IList
     if (bandListening->getCarrierFrequency() == flatReception->getCarrierFrequency() && bandListening->getBandwidth() == flatReception->getBandwidth())
         return SNIRReceiverBase::computeReceptionDecision(listening, reception, interferingReceptions, backgroundNoise);
     else
-        return new ReceptionDecision(reception, new RadioReceptionIndication(), false, false, false);
+        return new ReceptionDecision(reception, new ReceptionIndication(), false, false, false);
 }
 
 // TODO: this is not purely functional, see interface comment

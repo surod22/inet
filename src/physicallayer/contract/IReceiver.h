@@ -77,15 +77,15 @@ class INET_API IReceiver : public IPrintableObject
     virtual const IListeningDecision *computeListeningDecision(const IListening *listening, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const = 0;
 
     /**
-     * Returns whether the transmission can be received successfully or not.
+     * Returns whether the transmission can be synchronized successfully or not.
      * This function need not be purely functional and need not support
      * optimistic parallel computation.
      */
     virtual bool computeIsSynchronizationPossible(const ITransmission *transmission) const = 0;
 
     /**
-     * Returns whether the transmission represented by the synchronization can be
-     * received successfully or not. This function must be purely functional
+     * Returns whether the transmission represented by the reception can be
+     * synchronized successfully or not. This function must be purely functional
      * and support optimistic parallel computation.
      */
     virtual bool computeIsSynchronizationPossible(const IListening *listening, const IReception *reception) const = 0;

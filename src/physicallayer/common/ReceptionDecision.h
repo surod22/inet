@@ -28,13 +28,13 @@ class INET_API ReceptionDecision : public IReceptionDecision, public cObject
 {
   protected:
     const IReception *reception;
-    const RadioReceptionIndication *indication;
+    const ReceptionIndication *indication;
     const bool isPossible_;
     const bool isAttempted_;
     const bool isSuccessful_;
 
   public:
-    ReceptionDecision(const IReception *reception, const RadioReceptionIndication *indication, bool isPossible, bool isAttempted, bool isSuccessful) :
+    ReceptionDecision(const IReception *reception, const ReceptionIndication *indication, bool isPossible, bool isAttempted, bool isSuccessful) :
         reception(reception),
         indication(indication),
         isPossible_(isPossible),
@@ -46,7 +46,7 @@ class INET_API ReceptionDecision : public IReceptionDecision, public cObject
 
     virtual const IReception *getReception() const { return reception; }
 
-    virtual const RadioReceptionIndication *getIndication() const { return indication; }
+    virtual const ReceptionIndication *getIndication() const { return indication; }
 
     virtual bool isPossible() const { return isPossible_; }
 

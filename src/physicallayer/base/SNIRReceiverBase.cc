@@ -36,17 +36,18 @@ bool SNIRReceiverBase::areOverlappingBands(Hz carrierFrequency1, Hz bandwidth1, 
            carrierFrequency1 - bandwidth1 / 2 <= carrierFrequency2 + bandwidth2 / 2;
 }
 
-const RadioSynchronizationIndication *SNIRReceiverBase::computeSynchronizationIndication(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const
+const SynchronizationIndication *SNIRReceiverBase::computeSynchronizationIndication(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const
 {
+    // TODO: compute minSNIR for synchronization duration
     const INoise *noise = computeNoise(listening, interferingReceptions, backgroundNoise);
     double minSNIR = computeMinSNIR(reception, noise);
     delete noise;
-    RadioSynchronizationIndication *indication = new RadioSynchronizationIndication();
+    SynchronizationIndication *indication = new SynchronizationIndication();
     indication->setMinSNIR(minSNIR);
     return indication;
 }
 
-bool SNIRReceiverBase::computeIsSynchronizationSuccessful(const IListening *listening, const IReception *reception, const RadioSynchronizationIndication *indication) const
+bool SNIRReceiverBase::computeIsSynchronizationSuccessful(const IListening *listening, const IReception *reception, const SynchronizationIndication *indication) const
 {
     return indication->getMinSNIR() > snirThreshold;
 }
@@ -55,22 +56,22 @@ const ISynchronizationDecision *SNIRReceiverBase::computeSynchronizationDecision
 {
     bool isSynchronizationPossible = computeIsSynchronizationPossible(listening, reception);
     bool isSynchronizationAttempted = isSynchronizationPossible && computeIsSynchronizationAttempted(listening, reception, interferingReceptions);
-    const RadioSynchronizationIndication *indication = isSynchronizationAttempted ? computeSynchronizationIndication(listening, reception, interferingReceptions, backgroundNoise) : NULL;
+    const SynchronizationIndication *indication = isSynchronizationAttempted ? computeSynchronizationIndication(listening, reception, interferingReceptions, backgroundNoise) : NULL;
     bool isSynchronizationSuccessful = isSynchronizationAttempted && computeIsSynchronizationSuccessful(listening, reception, indication);
     return new SynchronizationDecision(reception, indication, isSynchronizationPossible, isSynchronizationAttempted, isSynchronizationSuccessful);
 }
 
-const RadioReceptionIndication *SNIRReceiverBase::computeReceptionIndication(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const
+const ReceptionIndication *SNIRReceiverBase::computeReceptionIndication(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const
 {
     const INoise *noise = computeNoise(listening, interferingReceptions, backgroundNoise);
     double minSNIR = computeMinSNIR(reception, noise);
     delete noise;
-    RadioReceptionIndication *indication = new RadioReceptionIndication();
+    ReceptionIndication *indication = new ReceptionIndication();
     indication->setMinSNIR(minSNIR);
     return indication;
 }
 
-bool SNIRReceiverBase::computeIsReceptionSuccessful(const IListening *listening, const IReception *reception, const RadioReceptionIndication *indication) const
+bool SNIRReceiverBase::computeIsReceptionSuccessful(const IListening *listening, const IReception *reception, const ReceptionIndication *indication) const
 {
     return indication->getMinSNIR() > snirThreshold;
 }
@@ -79,7 +80,7 @@ const IReceptionDecision *SNIRReceiverBase::computeReceptionDecision(const IList
 {
     bool isReceptionPossible = computeIsReceptionPossible(listening, reception);
     bool isReceptionAttempted = isReceptionPossible && computeIsReceptionAttempted(listening, reception, interferingReceptions);
-    const RadioReceptionIndication *indication = isReceptionAttempted ? computeReceptionIndication(listening, reception, interferingReceptions, backgroundNoise) : NULL;
+    const ReceptionIndication *indication = isReceptionAttempted ? computeReceptionIndication(listening, reception, interferingReceptions, backgroundNoise) : NULL;
     bool isReceptionSuccessful = isReceptionAttempted && computeIsReceptionSuccessful(listening, reception, indication);
     return new ReceptionDecision(reception, indication, isReceptionPossible, isReceptionAttempted, isReceptionSuccessful);
 }

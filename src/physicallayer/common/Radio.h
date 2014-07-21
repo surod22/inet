@@ -160,6 +160,7 @@ class INET_API Radio : public PhysicalLayerBase, public virtual IRadio
 
     virtual void startSynchronization(RadioFrame *radioFrame);
     virtual void endSynchronization(cMessage *message);
+
     virtual void startReception(RadioFrame *radioFrame);
     virtual void endReception(cMessage *message);
 

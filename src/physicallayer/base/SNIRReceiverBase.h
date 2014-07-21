@@ -39,24 +39,24 @@ class INET_API SNIRReceiverBase : public ReceiverBase
      * This function must be purely functional and support optimistic parallel
      * computation.
      */
-    virtual const RadioSynchronizationIndication *computeSynchronizationIndication(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const;
+    virtual const SynchronizationIndication *computeSynchronizationIndication(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const;
     /**
      * Returns whether the synchronization is successful or not. This function must
      * be purely functional and support optimistic parallel computation.
      */
-    virtual bool computeIsSynchronizationSuccessful(const IListening *listening, const IReception *reception, const RadioSynchronizationIndication *indication) const;
+    virtual bool computeIsSynchronizationSuccessful(const IListening *listening, const IReception *reception, const SynchronizationIndication *indication) const;
     /**
      * Returns the physical properties of the reception including noise and
      * signal related measures, error probabilities, actual error counts, etc.
      * This function must be purely functional and support optimistic parallel
      * computation.
      */
-    virtual const RadioReceptionIndication *computeReceptionIndication(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const;
+    virtual const ReceptionIndication *computeReceptionIndication(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const;
     /**
      * Returns whether the reception is free of any errors. This function must
      * be purely functional and support optimistic parallel computation.
      */
-    virtual bool computeIsReceptionSuccessful(const IListening *listening, const IReception *reception, const RadioReceptionIndication *indication) const;
+    virtual bool computeIsReceptionSuccessful(const IListening *listening, const IReception *reception, const ReceptionIndication *indication) const;
 
     virtual const INoise *computeNoise(const IListening *listening, const std::vector<const IReception *> *receptions, const INoise *backgroundNoise) const = 0;
     virtual double computeMinSNIR(const IReception *reception, const INoise *noise) const = 0;

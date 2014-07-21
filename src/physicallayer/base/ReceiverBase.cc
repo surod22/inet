@@ -34,13 +34,14 @@ bool ReceiverBase::computeIsSynchronizationAttempted(const IListening *listening
     if (!computeIsSynchronizationPossible(listening, reception))
         return false;
     else if (simTime() == reception->getStartTime())
-        // TODO: isn't there a better way for this optimization? see also in RadioMedium::isReceptionAttempted
-        return !reception->getReceiver()->getReceptionInProgress();
+        // TODO: isn't there a better way for this optimization? see also in RadioMedium::isSynchronizationAttempted
+        return !reception->getReceiver()->getSynchronizationInProgress();
     else {
         const IRadio *radio = reception->getReceiver();
         const IRadioMedium *channel = radio->getMedium();
         for (std::vector<const IReception *>::const_iterator it = interferingReceptions->begin(); it != interferingReceptions->end(); it++) {
             const IReception *interferingReception = *it;
+            // TODO: check if synchronization duration is also interfering
             bool isPrecedingReception = interferingReception->getStartTime() < reception->getStartTime() ||
                 (interferingReception->getStartTime() == reception->getStartTime() &&
                  interferingReception->getTransmission()->getId() < reception->getTransmission()->getId());
@@ -50,7 +51,7 @@ bool ReceiverBase::computeIsSynchronizationAttempted(const IListening *listening
                     if (radio->getReceptionInProgress() == interferingTransmission)
                         return false;
                 }
-                else if (channel->isReceptionAttempted(radio, interferingTransmission))
+                else if (channel->isSynchronizationAttempted(radio, interferingTransmission))
                     return false;
             }
         }

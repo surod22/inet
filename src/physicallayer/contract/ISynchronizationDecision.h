@@ -40,9 +40,10 @@ class INET_API ISynchronizationDecision : public IPrintableObject
     virtual const IReception *getReception() const = 0;
 
     /**
-     * Returns the physical properties of the synchronization.
+     * Returns the physical properties of the synchronization. This function
+     * never returns NULL.
      */
-    virtual const RadioSynchronizationIndication *getIndication() const = 0;
+    virtual const SynchronizationIndication *getIndication() const = 0;
 
     /**
      * Returns whether synchronization is possible according to the physical

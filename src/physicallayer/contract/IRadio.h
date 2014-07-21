@@ -264,7 +264,13 @@ class INET_API IRadio : public IPhysicalLayer, public IPrintableObject
     virtual const ITransmission *getTransmissionInProgress() const = 0;
 
     /**
-     * Returns the ongoing reception that the receiver is currently receiving
+     * Returns the ongoing transmission that the receiver is currently synchronizing
+     * or NULL.
+     */
+    virtual const ITransmission *getSynchronizationInProgress() const = 0;
+
+    /**
+     * Returns the ongoing transmission that the receiver is currently receiving
      * or NULL.
      */
     virtual const ITransmission *getReceptionInProgress() const = 0;
@@ -278,7 +284,7 @@ class INET_API IRadio : public IPhysicalLayer, public IPrintableObject
     /**
      * Returns the name of the provided radio reception state.
      */
-    static const char *getRadioReceptionStateName(ReceptionState receptionState);
+    static const char *getReceptionStateName(ReceptionState receptionState);
 
     /**
      * Returns the name of the provided radio transmission state.

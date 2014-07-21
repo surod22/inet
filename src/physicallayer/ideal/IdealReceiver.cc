@@ -93,13 +93,14 @@ const ISynchronizationDecision *IdealReceiver::computeSynchronizationDecision(co
 {
     // TODO: factor
     const IdealReception::Power power = check_and_cast<const IdealReception *>(reception)->getPower();
-    RadioSynchronizationIndication *indication = new RadioSynchronizationIndication();
+    SynchronizationIndication *indication = new SynchronizationIndication();
     if (power == IdealReception::POWER_RECEIVABLE) {
         if (ignoreInterference)
             return new SynchronizationDecision(reception, indication, true, true, true);
         else {
             for (std::vector<const IReception *>::const_iterator it = interferingReceptions->begin(); it != interferingReceptions->end(); it++) {
                 const IReception *interferingReception = *it;
+                // TODO: check if synchronization duration is also interfering
                 IdealReception::Power interferingPower = check_and_cast<const IdealReception *>(interferingReception)->getPower();
                 if (interferingPower == IdealReception::POWER_RECEIVABLE || interferingPower == IdealReception::POWER_INTERFERING)
                     return new SynchronizationDecision(reception, indication, true, true, false);
@@ -114,7 +115,7 @@ const ISynchronizationDecision *IdealReceiver::computeSynchronizationDecision(co
 const IReceptionDecision *IdealReceiver::computeReceptionDecision(const IListening *listening, const IReception *reception, const std::vector<const IReception *> *interferingReceptions, const INoise *backgroundNoise) const
 {
     const IdealReception::Power power = check_and_cast<const IdealReception *>(reception)->getPower();
-    RadioReceptionIndication *indication = new RadioReceptionIndication();
+    ReceptionIndication *indication = new ReceptionIndication();
     if (power == IdealReception::POWER_RECEIVABLE) {
         if (ignoreInterference)
             return new ReceptionDecision(reception, indication, true, true, true);

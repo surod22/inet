@@ -440,13 +440,6 @@ class INET_API RadioMedium : public cSimpleModule, public cListener, public IRad
     virtual const IReception *getReception(const IRadio *radio, const ITransmission *transmission) const;
     virtual const ISynchronizationDecision *getSynchronizationDecision(const IRadio *radio, const IListening *listening, const ITransmission *transmission) const;
     virtual const IReceptionDecision *getReceptionDecision(const IRadio *radio, const IListening *listening, const ITransmission *transmission) const;
-
-    virtual const ISynchronizationDecision *synchronizeOnMedium(const IRadio *radio, const IListening *listening, const ITransmission *transmission) const;
-    /**
-     * Returns a reception decision that describes the reception of the provided
-     * transmission by the receiver.
-     */
-    virtual const IReceptionDecision *receiveFromMedium(const IRadio *radio, const IListening *listening, const ITransmission *transmission) const;
     //@}
 
     /** @name Graphics */

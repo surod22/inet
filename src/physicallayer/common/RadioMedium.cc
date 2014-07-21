@@ -749,25 +749,25 @@ void RadioMedium::sendToRadio(IRadio *transmitter, const IRadio *receiver, const
     }
 }
 
-IRadioFrame *RadioMedium::transmitPacket(const IRadio *radio, cPacket *macFrame)
+IRadioFrame *RadioMedium::transmitPacket(const IRadio *transmitter, cPacket *macFrame)
 {
-    const ITransmission *transmission = radio->getTransmitter()->createTransmission(radio, macFrame, simTime());
-    addTransmission(radio, transmission);
+    const ITransmission *transmission = transmitter->getTransmitter()->createTransmission(transmitter, macFrame, simTime());
+    addTransmission(transmitter, transmission);
     RadioFrame *radioFrame = new RadioFrame(transmission);
     radioFrame->setName(macFrame->getName());
     radioFrame->setDuration(transmission->getEndTime() - transmission->getStartTime());
     radioFrame->encapsulate(macFrame);
+    sendToAffectedRadios(const_cast<IRadio *>(transmitter), radioFrame);
+    cMethodCallContextSwitcher contextSwitcher(this);
+    TransmissionCacheEntry *transmissionCacheEntry = getTransmissionCacheEntry(transmission);
+    transmissionCacheEntry->frame = radioFrame->dup();
     if (recordCommunicationLog) {
-        const Radio *transmitterRadio = check_and_cast<const Radio *>(radio);
+        const Radio *transmitterRadio = check_and_cast<const Radio *>(transmitter);
         communicationLog << "T " << transmitterRadio->getFullPath() << " " << transmitterRadio->getId() << " "
                          << "M " << radioFrame->getName() << " " << transmission->getId() << " "
                          << "S " << transmission->getStartTime() << " " << transmission->getStartPosition() << " -> "
                          << "E " << transmission->getEndTime() << " " << transmission->getEndPosition() << endl;
     }
-    sendToAffectedRadios(const_cast<IRadio *>(radio), radioFrame);
-    cMethodCallContextSwitcher contextSwitcher(this);
-    TransmissionCacheEntry *transmissionCacheEntry = getTransmissionCacheEntry(transmission);
-    transmissionCacheEntry->frame = radioFrame->dup();
     if (displayCommunication) {
         cFigure::Point position = PhysicalEnvironment::computeCanvasPoint(transmission->getStartPosition());
         cOvalFigure *communicationFigure = new cOvalFigure();
@@ -791,31 +791,41 @@ const ISynchronizationDecision *RadioMedium::synchronizePacket(const IRadio *rec
     const ITransmission *transmission = radioFrame->getTransmission();
     const IArrival *arrival = getArrival(receiver, transmission);
     const IListening *listening = receiver->getReceiver()->createListening(receiver, arrival->getStartTime(), arrival->getEndTime(), arrival->getStartPosition(), arrival->getEndPosition());
-    const ISynchronizationDecision *decision = synchronizeOnMedium(receiver, listening, transmission);
+    const ISynchronizationDecision *decision = getSynchronizationDecision(receiver, listening, transmission);
+    removeCachedSynchronizationDecision(receiver, transmission);
     delete listening;
-    if (displayCommunication)
-        updateCanvas();
-    return decision;
-}
-
-cPacket *RadioMedium::receivePacket(const IRadio *radio, IRadioFrame *radioFrame)
-{
-    const ITransmission *transmission = radioFrame->getTransmission();
-    const IArrival *arrival = getArrival(radio, transmission);
-    const IListening *listening = radio->getReceiver()->createListening(radio, arrival->getStartTime(), arrival->getEndTime(), arrival->getStartPosition(), arrival->getEndPosition());
-    const IReceptionDecision *decision = receiveFromMedium(radio, listening, transmission);
     if (recordCommunicationLog) {
         const IReception *reception = decision->getReception();
-        communicationLog << "R " << check_and_cast<const Radio *>(radio)->getFullPath() << " " << reception->getReceiver()->getId() << " "
+        communicationLog << "S " << check_and_cast<const Radio *>(receiver)->getFullPath() << " " << reception->getReceiver()->getId() << " "
                          << "M " << check_and_cast<const RadioFrame *>(radioFrame)->getName() << " " << transmission->getId() << " "
                          << "S " << reception->getStartTime() << " " << reception->getStartPosition() << " -> "
                          << "E " << reception->getEndTime() << " " << reception->getEndPosition() << " "
                          << "D " << decision->isPossible() << " " << decision->isAttempted() << " " << decision->isSuccessful() << endl;
     }
+    if (displayCommunication)
+        updateCanvas();
+    return decision;
+}
+
+cPacket *RadioMedium::receivePacket(const IRadio *receiver, IRadioFrame *radioFrame)
+{
+    const ITransmission *transmission = radioFrame->getTransmission();
+    const IArrival *arrival = getArrival(receiver, transmission);
+    const IListening *listening = receiver->getReceiver()->createListening(receiver, arrival->getStartTime(), arrival->getEndTime(), arrival->getStartPosition(), arrival->getEndPosition());
+    const IReceptionDecision *decision = getReceptionDecision(receiver, listening, transmission);
+    removeCachedReceptionDecision(receiver, transmission);
     cPacket *macFrame = check_and_cast<cPacket *>(radioFrame)->decapsulate();
     macFrame->setBitError(!decision->isSuccessful());
-    macFrame->setControlInfo(const_cast<RadioReceptionIndication *>(decision->getIndication()));
+    macFrame->setControlInfo(const_cast<ReceptionIndication *>(decision->getIndication()));
     delete listening;
+    if (recordCommunicationLog) {
+        const IReception *reception = decision->getReception();
+        communicationLog << "R " << check_and_cast<const Radio *>(receiver)->getFullPath() << " " << reception->getReceiver()->getId() << " "
+                         << "M " << check_and_cast<const RadioFrame *>(radioFrame)->getName() << " " << transmission->getId() << " "
+                         << "S " << reception->getStartTime() << " " << reception->getStartPosition() << " -> "
+                         << "E " << reception->getEndTime() << " " << reception->getEndPosition() << " "
+                         << "D " << decision->isPossible() << " " << decision->isAttempted() << " " << decision->isSuccessful() << endl;
+    }
     if (leaveCommunicationTrail && decision->isSuccessful()) {
         cLineFigure *communicationLine = new cLineFigure();
         communicationLine->setStart(PhysicalEnvironment::computeCanvasPoint(transmission->getStartPosition()));
@@ -827,20 +837,6 @@ cPacket *RadioMedium::receivePacket(const IRadio *radio, IRadioFrame *radioFrame
     if (displayCommunication)
         updateCanvas();
     return macFrame;
-}
-
-const ISynchronizationDecision *RadioMedium::synchronizeOnMedium(const IRadio *radio, const IListening *listening, const ITransmission *transmission) const
-{
-    const ISynchronizationDecision *decision = getSynchronizationDecision(radio, listening, transmission);
-    removeCachedSynchronizationDecision(radio, transmission);
-    return decision;
-}
-
-const IReceptionDecision *RadioMedium::receiveFromMedium(const IRadio *radio, const IListening *listening, const ITransmission *transmission) const
-{
-    const IReceptionDecision *decision = getReceptionDecision(radio, listening, transmission);
-    removeCachedReceptionDecision(radio, transmission);
-    return decision;
 }
 
 const IListeningDecision *RadioMedium::listenOnMedium(const IRadio *radio, const IListening *listening) const

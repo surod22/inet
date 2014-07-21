@@ -392,21 +392,21 @@ bool Radio::isListeningPossible()
 void Radio::updateTransceiverState()
 {
     // reception state
-    ReceptionState newRadioReceptionState;
+    ReceptionState newReceptionState;
     if (radioMode == RADIO_MODE_OFF || radioMode == RADIO_MODE_SLEEP || radioMode == RADIO_MODE_TRANSMITTER)
-        newRadioReceptionState = RECEPTION_STATE_UNDEFINED;
+        newReceptionState = RECEPTION_STATE_UNDEFINED;
     else if (endReceptionTimer && endReceptionTimer->isScheduled())
-        newRadioReceptionState = RECEPTION_STATE_RECEIVING;
+        newReceptionState = RECEPTION_STATE_RECEIVING;
     else if (endSynchronizationTimer && endSynchronizationTimer->isScheduled())
-        newRadioReceptionState = RECEPTION_STATE_SYNCHRONIZING;
+        newReceptionState = RECEPTION_STATE_SYNCHRONIZING;
     else if (isListeningPossible())
-        newRadioReceptionState = RECEPTION_STATE_BUSY;
+        newReceptionState = RECEPTION_STATE_BUSY;
     else
-        newRadioReceptionState = RECEPTION_STATE_IDLE;
-    if (receptionState != newRadioReceptionState) {
-        EV_INFO << "Changing radio reception state from " << getRadioReceptionStateName(receptionState) << " to " << getRadioReceptionStateName(newRadioReceptionState) << ".\n";
-        receptionState = newRadioReceptionState;
-        emit(receptionStateChangedSignal, newRadioReceptionState);
+        newReceptionState = RECEPTION_STATE_IDLE;
+    if (receptionState != newReceptionState) {
+        EV_INFO << "Changing radio reception state from " << getReceptionStateName(receptionState) << " to " << getReceptionStateName(newReceptionState) << ".\n";
+        receptionState = newReceptionState;
+        emit(receptionStateChangedSignal, newReceptionState);
     }
     // transmission state
     TransmissionState newRadioTransmissionState;

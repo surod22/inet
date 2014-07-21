@@ -28,13 +28,13 @@ class INET_API SynchronizationDecision : public ISynchronizationDecision, public
 {
   protected:
     const IReception *reception;
-    const RadioSynchronizationIndication *indication;
+    const SynchronizationIndication *indication;
     const bool isPossible_;
     const bool isAttempted_;
     const bool isSuccessful_;
 
   public:
-    SynchronizationDecision(const IReception *reception, const RadioSynchronizationIndication *indication, bool isPossible, bool isAttempted, bool isSuccessful) :
+    SynchronizationDecision(const IReception *reception, const SynchronizationIndication *indication, bool isPossible, bool isAttempted, bool isSuccessful) :
         reception(reception),
         indication(indication),
         isPossible_(isPossible),
@@ -46,7 +46,7 @@ class INET_API SynchronizationDecision : public ISynchronizationDecision, public
 
     virtual const IReception *getReception() const { return reception; }
 
-    virtual const RadioSynchronizationIndication *getIndication() const { return indication; }
+    virtual const SynchronizationIndication *getIndication() const { return indication; }
 
     virtual bool isPossible() const { return isPossible_; }
 

@@ -127,7 +127,7 @@ class INET_API IRadioMedium : public IPrintableObject
 
     /**
      * Returns the MAC frame that was transmitted in the provided radio frame.
-     * The MAC frame control info will be an instance of the RadioReceptionIndication
+     * The MAC frame control info will be an instance of the ReceptionIndication
      * class.
      */
     virtual cPacket *receivePacket(const IRadio *receiver, IRadioFrame *radioFrame) = 0;

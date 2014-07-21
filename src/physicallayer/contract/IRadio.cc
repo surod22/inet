@@ -60,7 +60,7 @@ const char *IRadio::getRadioModeName(RadioMode radioMode)
     return radioModeEnum->getStringFor(radioMode) + 11;
 }
 
-const char *IRadio::getRadioReceptionStateName(ReceptionState receptionState)
+const char *IRadio::getReceptionStateName(ReceptionState receptionState)
 {
     if (!receptionStateEnum)
         receptionStateEnum = cEnum::get("inet::radio::ReceptionState");
