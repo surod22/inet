@@ -17,6 +17,7 @@
 
 package inet.node.inet;
 
+import inet.applications.contract.ITunApp;
 import inet.common.lifecycle.NodeStatus;
 import inet.common.packet.PcapRecorder;
 import inet.linklayer.contract.IExternalNic;
@@ -25,11 +26,12 @@ import inet.linklayer.contract.IWiredNic;
 import inet.linklayer.contract.IWirelessNic;
 import inet.linklayer.loopback.LoopbackInterface;
 import inet.mobility.contract.IMobility;
-import inet.networklayer.contract.IRoutingTable;
 import inet.networklayer.common.InterfaceTable;
 import inet.networklayer.contract.INetworkLayer;
-import inet.power.contract.IEnergyStorage;
+import inet.networklayer.contract.IRoutingTable;
 import inet.power.contract.IEnergyGenerator;
+import inet.power.contract.IEnergyStorage;
+
 
 //
 // Contains the common lower layers (linklayer and networklayer)
@@ -49,13 +51,13 @@ module NodeBase
         bool hasStatus = default(false);
         int numExtInterfaces = default(0);
         int numRadios = default(0);               // the number of radios in the router. by default no wireless
+        int numTunInterfaces = default(0);
         int numPcapRecorders = default(0); // no of PcapRecorders.
         string mobilityType = default(numRadios > 0 ? "StationaryMobility" : "");
         string networkLayerType = default("IPv4NetworkLayer");
         string routingTableType = default("IPv4RoutingTable");
         bool forwarding = default(true);
         bool multicastForwarding = default(false);
-        bool hasTun = default(false);
         string energyStorageType = default("");
         string energyGeneratorType = default("");
         routingTable.forwarding = forwarding;
@@ -103,8 +105,12 @@ module NodeBase
         pcapRecorder[numPcapRecorders]: PcapRecorder {
             @display("p=53,350,r,10");
         }
+        tunApp[numTunInterfaces]: <> like ITunApp {
+            parameters:
+                @display("p=239,42");
+        }
         lo0: LoopbackInterface {
-            @display("p=78,406");
+            @display("p=50,406");
         }
         wlan[numRadios]: <default("Ieee80211Nic")> like IWirelessNic {
             parameters:
@@ -112,7 +118,7 @@ module NodeBase
         }
         eth[sizeof(ethg)]: <default("EthernetInterface")> like IWiredNic {
             parameters:
-                @display("p=368,406,row,60;q=txQueue");
+                @display("p=412,406,row,60;q=txQueue");
         }
         ppp[sizeof(pppg)]: <default("PPPInterface")> like IWiredNic {
             parameters:
@@ -122,9 +128,9 @@ module NodeBase
             parameters:
                 @display("p=149,406,row,10;q=txQueue;i=block/ifcard");
         }
-        tun: <default("TunInterface")> like ITunNic if hasTun {
+        tun[numTunInterfaces]: <default("TunInterface")> like ITunNic {
             parameters:
-                @display("p=213,406,row,10;q=txQueue;i=block/ifcard");
+                @display("p=312,406,row,10;q=txQueue;i=block/ifcard");
         }
 
     connections allowunconnected:
@@ -155,7 +161,12 @@ module NodeBase
             ext[i].upperLayerIn <-- networkLayer.ifOut++;
         }
 
-        tun.upperLayerOut --> networkLayer.ifIn++ if hasTun;
-        tun.upperLayerIn <-- networkLayer.ifOut++ if hasTun;
+        for i=0..numTunInterfaces-1 {
+            tunApp[i].tunOut --> tun[i].appIn;
+            tunApp[i].tunIn <-- tun[i].appOut;
+            tun[i].upperLayerOut --> networkLayer.ifIn++;
+            tun[i].upperLayerIn <-- networkLayer.ifOut++;
+        }
+
 }
 
