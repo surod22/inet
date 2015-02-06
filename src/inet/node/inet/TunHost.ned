@@ -34,6 +34,7 @@ module TunHost extends NodeBase
 {
     parameters:
         @display("i=device/pc2;bgl=4;bgb=588,447");
+        numTunInterfaces = 1;
         int numTcpTunApps = default(0);    // no of TCP packetdrill apps.
         int numUdpTunApps = default(0);    // no of UDP packetdrill apps.
         int numSctpTunApps = default(0);   // no of SCTP packetdrill apps.
@@ -44,10 +45,6 @@ module TunHost extends NodeBase
         string udpType = default(firstAvailableOrEmpty("UDP"));
         string sctpType = default(firstAvailableOrEmpty("SCTP"));
     submodules:
-        tunApp: <> like ITunApp {
-            parameters:
-                @display("p=280,40");
-        }
         tcp: <tcpType> like ITCP if hasTcpTun {
             parameters:
                 @display("p=230,140");
@@ -62,24 +59,21 @@ module TunHost extends NodeBase
         }
 
     connections allowunconnected:
-        tunApp.tcpOut --> tcp.appIn++ if hasTcpTun;
-        tunApp.tcpIn <-- tcp.appOut++ if hasTcpTun;
+        tunApp[0].tcpOut --> tcp.appIn++ if hasTcpTun;
+        tunApp[0].tcpIn <-- tcp.appOut++ if hasTcpTun;
 
         tcp.ipOut --> networkLayer.transportIn++ if hasTcpTun;
         tcp.ipIn <-- networkLayer.transportOut++ if hasTcpTun;
 
-        tunApp.udpOut --> udp.appIn++ if hasUdpTun;
-        tunApp.udpIn <-- udp.appOut++ if hasUdpTun;
+        tunApp[0].udpOut --> udp.appIn++ if hasUdpTun;
+        tunApp[0].udpIn <-- udp.appOut++ if hasUdpTun;
 
         udp.ipOut --> networkLayer.transportIn++ if hasUdpTun;
         udp.ipIn <-- networkLayer.transportOut++ if hasUdpTun;
 
-        tunApp.sctpOut --> sctp.from_appl++ if hasSctpTun;
-        tunApp.sctpIn <-- sctp.to_appl++ if hasSctpTun;
+        tunApp[0].sctpOut --> sctp.from_appl++ if hasSctpTun;
+        tunApp[0].sctpIn <-- sctp.to_appl++ if hasSctpTun;
 
         sctp.to_ip --> networkLayer.transportIn++ if hasSctpTun;
         sctp.from_ip <-- networkLayer.transportOut++ if hasSctpTun;
-
-        tunApp.tunOut --> tun.appIn;
-        tunApp.tunIn <-- tun.appOut;
 }

@@ -11,13 +11,11 @@ debug-on-errors = true
 tkenv-plugin-path = ../../../etc/plugins
 ned-path = .;../../../../src;../../lib
 
-**.hasTun = true
 **.testHost.numUdpTunApps = 1
-**.testHost.numTcpTunApps = 0
-**.testHost.tunApp.typename = "TunBasicApp"
-**.testHost.tunApp.thinkTime = 0.05s
-**.testHost.tunApp.packetsToSend = 10
-**.testHost.tunApp.messageLength = 100
+**.testHost.tunApp[0].typename = "TunBasicApp"
+**.testHost.tunApp[0].thinkTime = 0.05s
+**.testHost.tunApp[0].packetsToSend = 10
+**.testHost.tunApp[0].messageLength = 100
 
 **.startTime = 2s
 
@@ -25,7 +23,7 @@ ned-path = .;../../../../src;../../lib
 **.testHost.routingTable.routingFile = "../../lib/tun.mrt"
 **.testHost.numPcapRecorders=1
 **.testHost.pcapRecorder[0].pcapFile="tunhost.pcap"
-**.testHost.pcapRecorder[0].moduleNamePatterns="tun"
+**.testHost.pcapRecorder[0].moduleNamePatterns="tun0"
 **.testHost.pcapRecorder[0].sendingSignalNames="packetSentToUpper"
 **.testHost.pcapRecorder[0].receivingSignalNames="packetReceivedFromUpper"
 
