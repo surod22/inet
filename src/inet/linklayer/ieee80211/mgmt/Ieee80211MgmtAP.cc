@@ -138,6 +138,7 @@ void Ieee80211MgmtAP::sendManagementFrame(Ieee80211ManagementFrame *frame, const
 
 void Ieee80211MgmtAP::sendBeacon()
 {
+    //ASSERT(supportedRates.numRates > 0);      //FIXME
     EV << "Sending beacon\n";
     Ieee80211BeaconFrame *frame = new Ieee80211BeaconFrame("Beacon");
     Ieee80211BeaconFrameBody& body = frame->getBody();
@@ -148,6 +149,9 @@ void Ieee80211MgmtAP::sendBeacon()
 
     frame->setReceiverAddress(MACAddress::BROADCAST_ADDRESS);
     frame->setFromDS(true);
+
+    frame->setByteLength(28
+            + 8 + 2 + 2 + (2 + ssid.length()) + (2 + supportedRates.numRates));
 
     sendOrEnqueue(frame);
 }
