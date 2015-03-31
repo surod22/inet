@@ -38,7 +38,9 @@ void ConstantGainAntenna::initialize(int stage)
 
 void ConstantGainAntenna::printToStream(std::ostream& stream, int level) const
 {
-    stream << "ConstantGainAntenna, gain = " << gain;
+    stream << "ConstantGainAntenna";
+    if (level >= PRINT_LEVEL_DETAIL)
+        stream << ", gain = " << gain;
 }
 
 } // namespace physicallayer

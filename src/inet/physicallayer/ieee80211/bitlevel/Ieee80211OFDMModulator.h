@@ -40,11 +40,11 @@ class INET_API Ieee80211OFDMModulator : public IModulator
     void insertPilotSubcarriers(Ieee80211OFDMSymbol *ofdmSymbol, int symbolID) const;
 
   public:
-    Ieee80211OFDMModulator(const Ieee80211OFDMModulation *ofdmModulation);
+    Ieee80211OFDMModulator(const Ieee80211OFDMModulation *subcarrierModulation);
 
     virtual const ITransmissionSymbolModel *modulate(const ITransmissionBitModel *bitModel) const;
     const Ieee80211OFDMModulation *getModulation() const { return subcarrierModulation; }
-    void printToStream(std::ostream& stream, int level) const { stream << "IEEE 802.11 OFDM Modulator"; }
+    virtual void printToStream(std::ostream& stream, int level) const override;
 };
 
 } // namespace physicallayer

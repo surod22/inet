@@ -52,6 +52,17 @@ void APSKEncoder::initialize(int stage)
     }
 }
 
+void APSKEncoder::printToStream(std::ostream& stream, int level) const
+{
+    stream << "APSKEncoder";
+    if (level >= PRINT_LEVEL_DETAIL)
+        stream << ", code = " << code;
+    if (level >= PRINT_LEVEL_TRACE)
+        stream << ", scrambler = " << scrambler
+               << ", fecEncoder = " << fecEncoder
+               << ", interleaver = " << interleaver;
+}
+
 const ITransmissionBitModel *APSKEncoder::encode(const ITransmissionPacketModel *packetModel) const
 {
     const BitVector *serializedBits = packetModel->getSerializedPacket();

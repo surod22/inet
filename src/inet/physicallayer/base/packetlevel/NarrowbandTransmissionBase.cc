@@ -31,9 +31,11 @@ NarrowbandTransmissionBase::NarrowbandTransmissionBase(const IRadio *transmitter
 
 void NarrowbandTransmissionBase::printToStream(std::ostream& stream, int level) const
 {
-    stream << "modulation = { " << modulation << " }, "
-           << "carrierFrequency = " << carrierFrequency << ", "
-           << "bandwidth = " << bandwidth << ", ";
+    if (level >= PRINT_LEVEL_DETAIL)
+        stream << ", carrierFrequency = " << carrierFrequency;
+    if (level >= PRINT_LEVEL_TRACE)
+        stream << ", bandwidth = " << bandwidth
+               << ", modulation = { " << modulation << " }";
     TransmissionBase::printToStream(stream, level);
 }
 

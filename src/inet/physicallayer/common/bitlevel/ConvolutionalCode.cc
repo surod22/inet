@@ -37,7 +37,9 @@ ConvolutionalCode::ConvolutionalCode(const char *transferFunctionMatrix, const c
 
 void ConvolutionalCode::printToStream(std::ostream& stream, int level) const
 {
-    stream << codeRatePuncturingK << "/" << codeRatePuncturingN << " convolutional encoder/decoder";
+    stream << "ConvolutionalCode, "
+           << "codeRatePuncturingK = " << codeRatePuncturingK << ", "
+           << "codeRatePuncturingN = " << codeRatePuncturingN;
 }
 
 double ConvolutionalCode::getCodeRate() const

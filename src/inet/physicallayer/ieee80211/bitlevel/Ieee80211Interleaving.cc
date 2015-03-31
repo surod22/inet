@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2013 OpenSim Ltd.
+// Copyright (C) 2014 OpenSim Ltd.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -15,24 +15,26 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "inet/physicallayer/idealradio/IdealListening.h"
+#include "inet/physicallayer/ieee80211/bitlevel/Ieee80211Interleaving.h"
 
 namespace inet {
 
 namespace physicallayer {
 
-IdealListening::IdealListening(const IRadio *radio, simtime_t startTime, simtime_t endTime, Coord startPosition, Coord endPosition) :
-    ListeningBase(radio, startTime, endTime, startPosition, endPosition)
+Ieee80211Interleaving::Ieee80211Interleaving(int numberOfCodedBitsPerSymbol, int numberOfCodedBitsPerSubcarrier) :
+    numberOfCodedBitsPerSymbol(numberOfCodedBitsPerSymbol),
+    numberOfCodedBitsPerSubcarrier(numberOfCodedBitsPerSubcarrier)
 {
 }
 
-void IdealListening::printToStream(std::ostream& stream, int level) const
+void Ieee80211Interleaving::printToStream(std::ostream& stream, int level) const
 {
-    stream << "IdealListening, ";
-    ListeningBase::printToStream(stream, level);
+    stream << "Ieee80211Interleaving, "
+           << "numberOfCodedBitsPerSymbol = " << numberOfCodedBitsPerSymbol << ", "
+           << "numberOfCodedBitsPerSubcarrier = " << numberOfCodedBitsPerSubcarrier;
 }
 
-} // namespace physicallayer
+} /* namespace physicallayer */
 
-} // namespace inet
+} /* namespace inet */
 

@@ -36,14 +36,16 @@ TransmissionBase::TransmissionBase(const IRadio *transmitter, const cPacket *mac
 
 void TransmissionBase::printToStream(std::ostream& stream, int level) const
 {
-    stream << "id = " << id << ", "
-           << "transmitter id = " << transmitter->getId() << ", "
-           << "startTime = " << startTime << ", "
-           << "endTime = " << endTime << ", "
-           << "startPosition = " << startPosition << ", "
-           << "endPosition = " << endPosition << ", "
-           << "startOrientation = " << startOrientation << ", "
-           << "endOrientation = " << endOrientation;
+    if (level >= PRINT_LEVEL_DETAIL)
+        stream << ", id = " << id;
+    if (level >= PRINT_LEVEL_TRACE)
+        stream << ", transmitter id = " << transmitter->getId()
+               << ", startTime = " << startTime
+               << ", endTime = " << endTime
+               << ", startPosition = " << startPosition
+               << ", endPosition = " << endPosition
+               << ", startOrientation = " << startOrientation
+               << ", endOrientation = " << endOrientation;
 }
 
 } // namespace physicallayer

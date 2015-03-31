@@ -31,7 +31,7 @@ Define_Module(DimensionalAnalogModel);
 
 void DimensionalAnalogModel::printToStream(std::ostream& stream, int level) const
 {
-    stream << "DimensionalAnalogModel, ";
+    stream << "DimensionalAnalogModel";
     DimensionalAnalogModelBase::printToStream(stream, level);
 }
 

@@ -34,7 +34,7 @@ APSKDimensionalReceiver::APSKDimensionalReceiver() :
 
 void APSKDimensionalReceiver::printToStream(std::ostream& stream, int level) const
 {
-    stream << "APSKDimensionalReceiver, ";
+    stream << "APSKDimensionalReceiver";
     FlatReceiverBase::printToStream(stream, level);
 }
 

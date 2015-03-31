@@ -34,7 +34,7 @@ APSKScalarReceiver::APSKScalarReceiver() :
 
 void APSKScalarReceiver::printToStream(std::ostream& stream, int level) const
 {
-    stream << "APSKScalarReceiver, ";
+    stream << "APSKScalarReceiver";
     FlatReceiverBase::printToStream(stream, level);
 }
 

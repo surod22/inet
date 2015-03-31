@@ -43,8 +43,9 @@ void DimensionalAnalogModelBase::initialize(int stage)
 
 void DimensionalAnalogModelBase::printToStream(std::ostream& stream, int level) const
 {
-    stream << "attenuateWithCarrierFrequency = " << attenuateWithCarrierFrequency << ", "
-           << "interpolationMode = " << interpolationMode;
+    if (level >= PRINT_LEVEL_TRACE)
+        stream << ", attenuateWithCarrierFrequency = " << attenuateWithCarrierFrequency
+               << ", interpolationMode = " << interpolationMode;
 }
 
 const ConstMapping *DimensionalAnalogModelBase::computeReceptionPower(const IRadio *receiverRadio, const ITransmission *transmission) const

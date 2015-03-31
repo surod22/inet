@@ -27,6 +27,16 @@ DimensionalSignalAnalogModel::DimensionalSignalAnalogModel(const simtime_t durat
 {
 }
 
+void DimensionalSignalAnalogModel::printToStream(std::ostream& stream, int level) const
+{
+    stream << "DimensionalSignalAnalogModel";
+    if (level >= PRINT_LEVEL_DEBUG) {
+        stream << ", power = ";
+        power->print(EVSTREAM);
+    }
+    NarrowbandSignalAnalogModel::printToStream(stream, level);
+}
+
 W DimensionalSignalAnalogModel::computeMinPower(simtime_t startTime, simtime_t endTime) const
 {
     const DimensionSet& dimensions = power->getDimensionSet();

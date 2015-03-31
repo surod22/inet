@@ -29,8 +29,11 @@ DimensionalNoise::DimensionalNoise(simtime_t startTime, simtime_t endTime, Hz ca
 
 void DimensionalNoise::printToStream(std::ostream& stream, int level) const
 {
-    stream << "DimensionalNoise, "
-           << "power = { " << power << " }";
+    stream << "DimensionalNoise";
+    if (level >= PRINT_LEVEL_DETAIL) {
+       stream << ", power = ";
+       power->print(EVSTREAM);
+    }
     NarrowbandNoiseBase::printToStream(stream, level);
 }
 

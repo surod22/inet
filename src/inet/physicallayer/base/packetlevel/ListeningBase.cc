@@ -32,11 +32,12 @@ ListeningBase::ListeningBase(const IRadio *receiver, simtime_t startTime, simtim
 
 void ListeningBase::printToStream(std::ostream& stream, int level) const
 {
-    stream << "receiver = { " << receiver << " }, "
-           << "startTime = " << startTime << ", "
-           << "endTime = " << endTime << ", "
-           << "startPosition = " << startPosition << ", "
-           << "endPosition = " << endPosition;
+    if (level >= PRINT_LEVEL_TRACE)
+        stream << ", receiver = { " << receiver << " }"
+               << ", startTime = " << startTime
+               << ", endTime = " << endTime
+               << ", startPosition = " << startPosition
+               << ", endPosition = " << endPosition;
 }
 
 } // namespace physicallayer

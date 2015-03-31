@@ -24,9 +24,15 @@
 namespace inet {
 namespace physicallayer {
 
-Ieee80211OFDMModulation::Ieee80211OFDMModulation(const APSKModulationBase* modulation) :
-        subcarrierModulation(modulation)
+Ieee80211OFDMModulation::Ieee80211OFDMModulation(const APSKModulationBase* subcarrierModulation) :
+        subcarrierModulation(subcarrierModulation)
 {
+}
+
+void Ieee80211OFDMModulation::printToStream(std::ostream& stream, int level) const
+{
+    stream << "Ieee80211OFDMModulation, "
+           << "subcarrierModulation = " << subcarrierModulation;
 }
 
 // Modulations

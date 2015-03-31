@@ -42,7 +42,9 @@ void InterpolatingAntenna::initialize(int stage)
 
 void InterpolatingAntenna::printToStream(std::ostream& stream, int level) const
 {
-    stream << "InterpolatingAntenna, maxGain = " << maxGain;
+    stream << "InterpolatingAntenna";
+    if (level >= PRINT_LEVEL_DETAIL)
+        stream << ", maxGain = " << maxGain;
 }
 
 void InterpolatingAntenna::parseMap(std::map<double, double>& gainMap, const char *text)

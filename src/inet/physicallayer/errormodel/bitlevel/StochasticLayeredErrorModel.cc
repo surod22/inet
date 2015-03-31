@@ -47,7 +47,7 @@ void StochasticLayeredErrorModel::initialize(int stage)
 
 void StochasticLayeredErrorModel::printToStream(std::ostream& stream, int level) const
 {
-    stream << "LayeredStochasticErrorModel, "
+    stream << "StochasticLayeredErrorModel, "
            << "packetErrorRate = " << packetErrorRate << ", "
            << "bitErrorRate = " << bitErrorRate << ", "
            << "symbolErrorRate = " << symbolErrorRate;

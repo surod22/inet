@@ -35,7 +35,7 @@ SignalPacketModel::~SignalPacketModel()
 
 void SignalPacketModel::printToStream(std::ostream& stream, int level) const
 {
-    stream << packet;
+    stream << "packet = " << packet;
 }
 
 TransmissionPacketModel::TransmissionPacketModel(const cPacket *packet, const BitVector *serializedPacket, bps bitrate) :

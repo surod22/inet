@@ -35,14 +35,15 @@ ReceptionBase::ReceptionBase(const IRadio *receiver, const ITransmission *transm
 
 void ReceptionBase::printToStream(std::ostream& stream, int level) const
 {
-    stream << "receiver id = " << receiver->getId() << ", "
-           << "transmission id = " << transmission->getId() << ", "
-           << "startTime = " << startTime << ", "
-           << "endTime = " << endTime << ", "
-           << "startPosition = " << startPosition << ", "
-           << "endPosition = " << endPosition << ", "
-           << "startOrientation = " << startOrientation << ", "
-           << "endOrientation = " << endOrientation;
+    if (level >= PRINT_LEVEL_TRACE)
+        stream << ", receiver id = " << receiver->getId()
+               << ", transmission id = " << transmission->getId()
+               << ", startTime = " << startTime
+               << ", endTime = " << endTime
+               << ", startPosition = " << startPosition
+               << ", endPosition = " << endPosition
+               << ", startOrientation = " << startOrientation
+               << ", endOrientation = " << endOrientation;
 }
 
 } // namespace physicallayer

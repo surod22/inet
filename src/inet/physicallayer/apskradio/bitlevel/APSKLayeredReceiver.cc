@@ -93,6 +93,24 @@ const IReceptionAnalogModel *APSKLayeredReceiver::createAnalogModel(const Layere
     return nullptr;
 }
 
+void APSKLayeredReceiver::printToStream(std::ostream& stream, int level) const
+{
+    stream << "APSKLayeredReceiver";
+    if (level >= PRINT_LEVEL_DETAIL)
+        stream << ", levelOfDetail = " << levelOfDetail
+               << ", carrierFrequency = " << carrierFrequency;
+    if (level >= PRINT_LEVEL_TRACE)
+        stream << ", errorModel = { " << errorModel << " }"
+               << ", decoder = { " << decoder << " }"
+               << ", demodulator = { " << demodulator << " }"
+               << ", pulseFilter = { " << pulseFilter << " }"
+               << ", analogDigitalConverter = { " << analogDigitalConverter << " }"
+               << ", energyDetection = " << energyDetection
+               << ", sensitivity = " << sensitivity
+               << ", bandwidth = " << bandwidth
+               << ", snirThreshold = " << snirThreshold;
+}
+
 const IReceptionSampleModel *APSKLayeredReceiver::createSampleModel(const LayeredTransmission *transmission, const ISNIR *snir, const IReceptionAnalogModel *analogModel) const
 {
     if (levelOfDetail == SAMPLE_DOMAIN)

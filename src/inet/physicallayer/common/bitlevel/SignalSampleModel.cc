@@ -35,6 +35,8 @@ SignalSampleModel::~SignalSampleModel()
 
 void SignalSampleModel::printToStream(std::ostream& stream, int level) const
 {
+    stream << "sampleLength = " << sampleLength << ","
+           << "sampleRate = " << sampleRate;
 }
 
 TransmissionSampleModel::TransmissionSampleModel(int sampleLength, double sampleRate, const std::vector<W> *samples) :

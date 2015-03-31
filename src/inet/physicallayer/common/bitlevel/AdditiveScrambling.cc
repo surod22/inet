@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2013 OpenSim Ltd.
+// Copyright (C) 2014 OpenSim Ltd.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -15,24 +15,26 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "inet/physicallayer/idealradio/IdealListening.h"
+#include "inet/physicallayer/common/bitlevel/AdditiveScrambling.h"
 
 namespace inet {
 
 namespace physicallayer {
 
-IdealListening::IdealListening(const IRadio *radio, simtime_t startTime, simtime_t endTime, Coord startPosition, Coord endPosition) :
-    ListeningBase(radio, startTime, endTime, startPosition, endPosition)
+AdditiveScrambling::AdditiveScrambling(const ShortBitVector& seed, const ShortBitVector& generatorPolynomial) :
+    seed(seed),
+    generatorPolynomial(generatorPolynomial)
 {
 }
 
-void IdealListening::printToStream(std::ostream& stream, int level) const
+void AdditiveScrambling::printToStream(std::ostream& stream, int level) const
 {
-    stream << "IdealListening, ";
-    ListeningBase::printToStream(stream, level);
+    stream << "AdditiveScrambling, "
+           << "seed = " << seed << ", "
+           << "generatorPolynomial = " << generatorPolynomial;
 }
 
-} // namespace physicallayer
+} /* namespace physicallayer */
 
-} // namespace inet
+} /* namespace inet */
 

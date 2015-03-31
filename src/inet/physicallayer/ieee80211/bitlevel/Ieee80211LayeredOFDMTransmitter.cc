@@ -76,6 +76,24 @@ void Ieee80211LayeredOFDMTransmitter::initialize(int stage)
     }
 }
 
+void Ieee80211LayeredOFDMTransmitter::printToStream(std::ostream& stream, int level) const
+{
+    stream << "Ieee80211LayeredOFDMTransmitter, "
+           << "levelOfDetail = " << levelOfDetail << ", "
+           << "mode = { " << mode << " }, "
+           << "signalEncoder = { " << signalEncoder << " }, "
+           << "dataEncoder = { " << dataEncoder << " }, "
+           << "signalModulator = { " << signalModulator << " }, "
+           << "dataModulator = { " << dataModulator << " }, "
+           << "pulseShaper = { " << pulseShaper << " }, "
+           << "digitalAnalogConverter = { " << digitalAnalogConverter << " }, "
+           << "isCompliant = " << isCompliant << ", "
+           << "bandwidth = " << bandwidth << ", "
+           << "channelSpacing = " << channelSpacing << ", "
+           << "carrierFrequency = " << carrierFrequency << ", "
+           << "power = " << power;
+}
+
 BitVector *Ieee80211LayeredOFDMTransmitter::serialize(const cPacket *packet) const
 {
     Ieee80211PhySerializer phySerializer;

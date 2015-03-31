@@ -31,9 +31,11 @@ FlatTransmissionBase::FlatTransmissionBase(const IRadio *transmitter, const cPac
 
 void FlatTransmissionBase::printToStream(std::ostream& stream, int level) const
 {
-    stream << "headerBitLength = " << headerBitLength << ", "
-           << "payloadBitLength = " << payloadBitLength << ", "
-           << "bitrate = " << bitrate << ", ";
+    if (level >= PRINT_LEVEL_DETAIL)
+        stream << ", bitrate = " << bitrate;
+    if (level >= PRINT_LEVEL_TRACE)
+        stream << ", headerBitLength = " << headerBitLength
+               << ", payloadBitLength = " << payloadBitLength;
     NarrowbandTransmissionBase::printToStream(stream, level);
 }
 

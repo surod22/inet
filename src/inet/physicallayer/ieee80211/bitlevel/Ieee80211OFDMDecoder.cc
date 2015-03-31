@@ -43,6 +43,15 @@ Ieee80211OFDMDecoder::Ieee80211OFDMDecoder(const Ieee80211OFDMCode *code) :
         deinterleaver = new Ieee80211Interleaver(code->getInterleaving());
 }
 
+void Ieee80211OFDMDecoder::printToStream(std::ostream& stream, int level) const
+{
+    stream << "Ieee80211OFDMDecoder, "
+           << "code = " << code << ", "
+           << "descrambler = " << descrambler << ", "
+           << "fecDecoder = " << fecDecoder << ", "
+           << "deinterleaver = " << deinterleaver;
+}
+
 const IReceptionPacketModel *Ieee80211OFDMDecoder::decode(const IReceptionBitModel *bitModel) const
 {
     BitVector *decodedBits = new BitVector(*bitModel->getBits());

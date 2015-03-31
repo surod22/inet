@@ -31,11 +31,10 @@ class INET_API Ieee80211Interleaving : public IInterleaving
     int numberOfCodedBitsPerSubcarrier;
 
   public:
-    Ieee80211Interleaving(int numberOfCodedBitsPerSymbol, int numberOfCodedBitsPerSubcarrier) :
-        numberOfCodedBitsPerSymbol(numberOfCodedBitsPerSymbol),
-        numberOfCodedBitsPerSubcarrier(numberOfCodedBitsPerSubcarrier) {}
+    Ieee80211Interleaving(int numberOfCodedBitsPerSymbol, int numberOfCodedBitsPerSubcarrier);
 
-    void printToStream(std::ostream& stream, int level) const { stream << "IEEE 802.11 Interleaver"; }
+    virtual void printToStream(std::ostream& stream, int level) const override;
+
     int getNumberOfCodedBitsPerSubcarrier() const { return numberOfCodedBitsPerSubcarrier; }
     int getNumberOfCodedBitsPerSymbol() const { return numberOfCodedBitsPerSymbol; }
 };

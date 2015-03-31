@@ -75,6 +75,22 @@ void APSKLayeredTransmitter::initialize(int stage)
     }
 }
 
+void APSKLayeredTransmitter::printToStream(std::ostream& stream, int level) const
+{
+    stream << "APSKLayeredTransmitter";
+    if (level >= PRINT_LEVEL_DETAIL)
+        stream << ", levelOfDetail = " << levelOfDetail
+               << ", carrierFrequency = " << carrierFrequency;
+    if (level >= PRINT_LEVEL_TRACE)
+        stream << ", encoder = { " << encoder << " }"
+               << ", modulator = { " << modulator << " }"
+               << ", pulseShaper = { " << pulseShaper << " }"
+               << ", digitalAnalogConverter = { " << digitalAnalogConverter << " }"
+               << ", power = " << power
+               << ", bitrate = " << bitrate
+               << ", bandwidth = " << bandwidth;
+}
+
 int APSKLayeredTransmitter::computePaddingLength(BitVector *bits) const
 {
     const ConvolutionalCode *forwardErrorCorrection = nullptr;

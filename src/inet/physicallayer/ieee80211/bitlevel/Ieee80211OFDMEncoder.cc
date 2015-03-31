@@ -32,6 +32,15 @@ namespace inet {
 
 namespace physicallayer {
 
+void Ieee80211OFDMEncoder::printToStream(std::ostream& stream, int level) const
+{
+    stream << "Ieee80211OFDMEncoder, "
+           << "convolutionalCoder = " << convolutionalCoder << ", "
+           << "interleaver = " << interleaver << ", "
+           << "scrambler = " << scrambler << ", "
+           << "code = " << code;
+}
+
 const ITransmissionBitModel *Ieee80211OFDMEncoder::encode(const ITransmissionPacketModel *packetModel) const
 {
     const BitVector *serializedPacket = packetModel->getSerializedPacket();

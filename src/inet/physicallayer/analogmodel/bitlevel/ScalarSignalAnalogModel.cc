@@ -29,8 +29,13 @@ ScalarSignalAnalogModel::ScalarSignalAnalogModel(const simtime_t duration, Hz ca
 
 void ScalarSignalAnalogModel::printToStream(std::ostream& stream, int level) const
 {
-    stream << "power = " << power << ", carrier frequency = " << carrierFrequency << ", bandwidth = " << bandwidth << ", ";
-    SignalAnalogModel::printToStream(stream, level);
+    stream << "ScalarSignalAnalogModel";
+    if (level >= PRINT_LEVEL_DETAIL)
+       stream << ", power = " << power;
+    if (level >= PRINT_LEVEL_TRACE)
+       stream << ", carrierFrequency = " << carrierFrequency
+              << ", bandwidth = " << bandwidth;
+    NarrowbandSignalAnalogModel::printToStream(stream, level);
 }
 
 ScalarTransmissionSignalAnalogModel::ScalarTransmissionSignalAnalogModel(const simtime_t duration, Hz carrierFrequency, Hz bandwidth, W power) :

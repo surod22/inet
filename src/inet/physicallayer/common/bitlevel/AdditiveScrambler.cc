@@ -24,7 +24,7 @@ namespace physicallayer {
 
 void AdditiveScrambler::printToStream(std::ostream& stream, int level) const
 {
-    stream << "Additive scrambling, "
+    stream << "AdditiveScrambler, "
            << "scrambling = " << scrambling;
 }
 

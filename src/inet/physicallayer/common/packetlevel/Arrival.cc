@@ -35,7 +35,8 @@ Arrival::Arrival(const simtime_t startPropagationTime, const simtime_t endPropag
 
 void Arrival::printToStream(std::ostream& stream, int level) const
 {
-    stream << "startPropagationTime = " << startPropagationTime << ", "
+    stream << "Arrival, "
+           << "startPropagationTime = " << startPropagationTime << ", "
            << "endPropagationTime = " << endPropagationTime << ", "
            << "startTime = " << startTime << ", "
            << "endTime = " << endTime << ", "

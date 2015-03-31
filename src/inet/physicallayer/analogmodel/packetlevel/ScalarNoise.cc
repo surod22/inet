@@ -29,8 +29,9 @@ ScalarNoise::ScalarNoise(simtime_t startTime, simtime_t endTime, Hz carrierFrequ
 
 void ScalarNoise::printToStream(std::ostream& stream, int level) const
 {
-    stream << "ScalarNoise, "
-           << "powerChanges = { " << powerChanges << " }, ";
+    stream << "ScalarNoise";
+    if (level >= PRINT_LEVEL_DETAIL)
+        stream << ", powerChanges = { " << powerChanges << " }";
     NarrowbandNoiseBase::printToStream(stream, level);
 }
 

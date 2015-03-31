@@ -44,7 +44,9 @@ double DipoleAntenna::computeGain(EulerAngles direction) const
 
 void DipoleAntenna::printToStream(std::ostream& stream, int level) const
 {
-    stream << "DipoleAntenna, length = " << length;
+    stream << "DipoleAntenna";
+    if (level >= PRINT_LEVEL_DETAIL)
+        stream << ", length = " << length;
 }
 
 } // namespace physicallayer

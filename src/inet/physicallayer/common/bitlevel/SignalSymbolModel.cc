@@ -37,7 +37,10 @@ SignalSymbolModel::~SignalSymbolModel()
 
 void SignalSymbolModel::printToStream(std::ostream& stream, int level) const
 {
-//    stream << modulation;
+    stream << "headerSymbolLength = " << headerSymbolLength << ", "
+           << "payloadSymbolLength = " << payloadSymbolLength << ", "
+           << "headerSymbolRate = " << headerSymbolRate << ", "
+           << "payloadSymbolRate = " << payloadSymbolRate;
 }
 
 TransmissionSymbolModel::TransmissionSymbolModel(int headerSymbolLength, double headerSymbolRate, int payloadSymbolLength, double payloadSymbolRate, const std::vector<const ISymbol *> *symbols, const IModulation *headerModulation, const IModulation *payloadModulation) :

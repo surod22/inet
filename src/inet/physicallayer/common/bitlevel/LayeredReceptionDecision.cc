@@ -41,6 +41,16 @@ LayeredReceptionDecision::~LayeredReceptionDecision()
     delete analogModel;
 }
 
+void LayeredReceptionDecision::printToStream(std::ostream& stream, int level) const
+{
+    stream << "LayeredReceptionDecision, "
+           << "packetModel = " << packetModel << ", "
+           << "bitModel = " << bitModel << ", "
+           << "symbolModel = " << symbolModel << ", "
+           << "sampleModel = " << sampleModel << ", "
+           << "analogModel = " << analogModel;
+}
+
 const cPacket *LayeredReceptionDecision::getPhyFrame() const
 {
     return packetModel->getPacket();

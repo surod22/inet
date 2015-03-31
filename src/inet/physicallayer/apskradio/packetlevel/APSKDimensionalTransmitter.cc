@@ -32,7 +32,7 @@ APSKDimensionalTransmitter::APSKDimensionalTransmitter() :
 
 void APSKDimensionalTransmitter::printToStream(std::ostream& stream, int level) const
 {
-    stream << "APSKDimensionalTransmitter, ";
+    stream << "APSKDimensionalTransmitter";
     DimensionalTransmitterBase::printToStream(stream, level);
 }
 

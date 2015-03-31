@@ -29,8 +29,9 @@ SNIRBase::SNIRBase(const IReception *reception, const INoise *noise) :
 
 void SNIRBase::printToStream(std::ostream& stream, int level) const
 {
-    stream << "reception = { " << reception << " }, "
-           << "noise = { " << noise << " }";
+    if (level >= PRINT_LEVEL_TRACE)
+        stream << ", reception = { " << reception << " }"
+               << ", noise = { " << noise << " }";
 }
 
 } // namespace physicallayer

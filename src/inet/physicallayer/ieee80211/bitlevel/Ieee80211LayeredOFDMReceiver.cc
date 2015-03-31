@@ -87,6 +87,27 @@ const IReceptionAnalogModel *Ieee80211LayeredOFDMReceiver::createAnalogModel(con
     return nullptr;
 }
 
+void Ieee80211LayeredOFDMReceiver::printToStream(std::ostream& stream, int level) const
+{
+    stream << "Ieee80211LayeredOFDMReceiver, "
+           << "levelOfDetail = " << levelOfDetail << ", "
+           << "mode = { " << levelOfDetail << " }, "
+           << "errorModel = { " << levelOfDetail << " }, "
+           << "dataDecoder = { " << levelOfDetail << " }, "
+           << "signalDecoder = { " << levelOfDetail << " }, "
+           << "dataDemodulator = { " << levelOfDetail << " }, "
+           << "signalDemodulator = { " << levelOfDetail << " }, "
+           << "pulseFilter = { " << levelOfDetail << " }, "
+           << "analogDigitalConverter = { " << levelOfDetail << " }, "
+           << "energyDetection = " << levelOfDetail << ", "
+           << "sensitivity = " << levelOfDetail << ", "
+           << "carrierFrequency = " << levelOfDetail << ", "
+           << "bandwidth = " << levelOfDetail << ", "
+           << "channelSpacing = " << levelOfDetail << ", "
+           << "snirThreshold = " << levelOfDetail << ", "
+           << "isCompliant = " << levelOfDetail;
+}
+
 const IReceptionSampleModel *Ieee80211LayeredOFDMReceiver::createSampleModel(const LayeredTransmission *transmission, const ISNIR *snir) const
 {
     if (levelOfDetail == SAMPLE_DOMAIN)

@@ -36,7 +36,6 @@ namespace physicallayer {
 class Ieee80211NistErrorModel : public Ieee80211ErrorModelBase
 {
   public:
-
     Ieee80211NistErrorModel();
     virtual ~Ieee80211NistErrorModel();
 

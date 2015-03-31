@@ -115,10 +115,11 @@ void DimensionalTransmitterBase::initialize(int stage)
 
 void DimensionalTransmitterBase::printToStream(std::ostream& stream, int level) const
 {
-    stream // TODO: << "dimensions = { " << dimensions << " } , "
-           << "interpolationMode = " << interpolationMode << ", ";
-           // TODO: << "timeGains = { " << timeGains << " }, "
-           // TODO: << "frequencyGains = { " << frequencyGains << " }, ";
+    if (level >= PRINT_LEVEL_TRACE)
+        stream << ", interpolationMode = " << interpolationMode;
+               // TODO: << ", dimensions = { " << dimensions << " }"
+               // TODO: << "timeGains = { " << timeGains << " }"
+               // TODO: << "frequencyGains = { " << frequencyGains << " }";
     FlatTransmitterBase::printToStream(stream, level);
 }
 

@@ -30,6 +30,14 @@ namespace physicallayer {
 class INET_API IPrintableObject
 {
   public:
+    enum PrintLevel {
+        PRINT_LEVEL_INFO,
+        PRINT_LEVEL_DETAIL,
+        PRINT_LEVEL_DEBUG,
+        PRINT_LEVEL_TRACE
+    };
+
+  public:
     virtual ~IPrintableObject() {}
 
     /**
@@ -39,29 +47,37 @@ class INET_API IPrintableObject
      * or not are all forwarded to this function.
      */
     virtual void printToStream(std::ostream& stream, int level) const = 0;
+
+    virtual std::string getInfoString() const { std::stringstream s; printToStream(s, PRINT_LEVEL_INFO); return s.str(); }
+
+    virtual std::string getDetailString() const { std::stringstream s; printToStream(s, PRINT_LEVEL_DETAIL); return s.str(); }
+
+    virtual std::string getDebugString() const { std::stringstream s; printToStream(s, PRINT_LEVEL_DEBUG); return s.str(); }
+
+    virtual std::string getTraceString() const { std::stringstream s; printToStream(s, PRINT_LEVEL_TRACE); return s.str(); }
 };
 
 inline std::ostream& operator<<(std::ostream& stream, IPrintableObject *object)
 {
-    object->printToStream(stream, 0);
+    object->printToStream(stream, IPrintableObject::PRINT_LEVEL_DETAIL);
     return stream;
 };
 
 inline std::ostream& operator<<(std::ostream& stream, IPrintableObject& object)
 {
-    object.printToStream(stream, 0);
+    object.printToStream(stream, IPrintableObject::PRINT_LEVEL_DETAIL);
     return stream;
 };
 
 inline std::ostream& operator<<(std::ostream& stream, const IPrintableObject *object)
 {
-    object->printToStream(stream, 0);
+    object->printToStream(stream, IPrintableObject::PRINT_LEVEL_DETAIL);
     return stream;
 };
 
 inline std::ostream& operator<<(std::ostream& stream, const IPrintableObject& object)
 {
-    object.printToStream(stream, 0);
+    object.printToStream(stream, IPrintableObject::PRINT_LEVEL_DETAIL);
     return stream;
 };
 
