@@ -23,6 +23,10 @@
 //
 
 #include <omnetpp.h>
+
+namespace omnetpp {}
+using namespace omnetpp;
+
 #include "inet/common/Compat.h"
 
 #if OMNETPP_VERSION < 0x0406
