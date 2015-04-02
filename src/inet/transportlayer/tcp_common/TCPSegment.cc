@@ -149,6 +149,25 @@ void TCPSegment::truncateData(unsigned int truncleft, unsigned int truncright)
     }
 }
 
+template<typename T, typename A>
+void doPacking(cCommBuffer *buffer, const std::list<T,A>& l)
+{
+    doPacking(buffer, (int)l.size());
+    for (typename std::list<T,A>::const_iterator it = l.begin(); it != l.end(); it++)
+        doPacking(buffer, (T&)*it);
+}
+
+template<typename T, typename A>
+void doUnpacking(cCommBuffer *buffer, std::list<T,A>& l)
+{
+    int n;
+    doUnpacking(buffer, n);
+    for (int i = 0; i < n; i++) {
+        l.push_back(T());
+        doUnpacking(buffer, l.back());
+    }
+}
+
 void TCPSegment::parsimPack(cCommBuffer *b) PARSIMPACK_CONST
 {
     TCPSegment_Base::parsimPack(b);
