@@ -46,6 +46,12 @@ using namespace omnetpp;
 
 #include "inet/common/InitStages.h"
 
+#if 1   //TODO: OMNeT++ 5.0b2+
+#define PARSIMPACK_CONST const
+#else
+#define PARSIMPACK_CONST
+#endif
+
 /// main namespace of INET framework
 namespace inet {
 

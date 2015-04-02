@@ -149,7 +149,7 @@ void TCPSegment::truncateData(unsigned int truncleft, unsigned int truncright)
     }
 }
 
-void TCPSegment::parsimPack(cCommBuffer *b)
+void TCPSegment::parsimPack(cCommBuffer *b) PARSIMPACK_CONST
 {
     TCPSegment_Base::parsimPack(b);
     doPacking(b, payloadList);
